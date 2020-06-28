@@ -5,10 +5,11 @@
 namespace geometry {
 
 struct Rectangle {
-	Rectangle(const double x, const double y);
-	Vec2d<double> center;
-	double width, height;
-	double orientation;   // [0, 2*pi]
+	Rectangle(const float x, const float y,
+			const float width, const float height);
+	Vec2d<float> center;
+	float width, height;
+	float orientation;   // [0, 2*pi]
 };
 
 } // geometry

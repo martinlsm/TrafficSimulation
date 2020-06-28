@@ -8,16 +8,18 @@ template <class T>
 struct Vec2d {
 	T x,y;
 	Vec2d(const T x, const T y);
-	const double abs();
+	const float abs();
 	void operator+=(const Vec2d<T> &rhs);
-	friend Vec2d<T> operator+(const Vec2d<T> &v1, const Vec2d<T> &v2);
+
+	template<class U>
+	friend Vec2d<U> operator+(const Vec2d<U> &v1, const Vec2d<U> &v2);
 };
 
 template <class T>
 Vec2d<T>::Vec2d(const T x, const T y) : x(x), y(y) {}
 
 template <class T>
-const double Vec2d<T>::abs() {
+const float Vec2d<T>::abs() {
 	return std::sqrt(x * x + y * y);
 }
 
