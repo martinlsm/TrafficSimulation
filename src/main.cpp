@@ -5,5 +5,5 @@
 
 int main(int argc, char *argv[])
 {
-	Car car(1, 2);
+	CarBody car(1, 2);
 }

@@ -9,7 +9,6 @@ project (traffic_sim)
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
     src/main.cpp
-	src/rectangle.cpp
 	src/car.cpp
 )
 

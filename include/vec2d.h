@@ -9,6 +9,8 @@ struct Vec2d {
 	T x,y;
 	Vec2d(const T x, const T y);
 	const float abs();
+	void normalize();
+	void rotate_left(const float rad);
 	void operator+=(const Vec2d<T> &rhs);
 
 	template<class U>
@@ -21,6 +23,23 @@ Vec2d<T>::Vec2d(const T x, const T y) : x(x), y(y) {}
 template <class T>
 const float Vec2d<T>::abs() {
 	return std::sqrt(x * x + y * y);
+}
+
+template <class T>
+void Vec2d<T>::normalize() {
+	float len = this->abs();
+	x /= len;
+	y /= len;
+}
+
+template <class T>
+void Vec2d<T>::rotate_left(const float rad) {
+	float sin = std::sin(rad);	
+	float cos = std::cos(rad);
+	float new_x = cos * x - sin * y;
+	float new_y = sin * x + cos * y;
+	x = new_x;
+	y = new_y;
 }
 
 template <class T>
