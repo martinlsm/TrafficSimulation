@@ -262,4 +262,4 @@ int main(int argc, char *argv[]) {
   return app.exec();
 }
 
-#include "bl-qt-polys.moc"
+#include "main.moc"
