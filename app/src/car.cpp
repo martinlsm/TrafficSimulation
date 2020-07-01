@@ -17,3 +17,18 @@ void CarBody::update(const float dt) {
 	this->velocity.rotate_left(steer_delta);
 	this->position += velocity;
 }
+
+Vec2d<float> CarBody::getPos() const {
+	return position;	
+}
+
+Vec2d<float> CarBody::getSize() const {
+	return size;
+}
+
+float CarBody::getRotation() const {
+	if (velocity.x == 0) {
+		return std::atan(velocity.y / 0.001f);
+	}
+	return std::atan(velocity.y / velocity.x);
+}
