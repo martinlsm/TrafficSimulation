@@ -18,4 +18,7 @@ private:
 public:
 	CarBody(const float center_x, const float center_y);
 	void update(const float dt);
+	Vec2d<float> getPos() const;
+	Vec2d<float> getSize() const;
+	float getRotation() const;
 };
