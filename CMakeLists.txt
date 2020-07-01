@@ -21,3 +21,5 @@ target_include_directories(traffic_sim
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/include
 )
+
+target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
