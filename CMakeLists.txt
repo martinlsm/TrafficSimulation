@@ -10,6 +10,7 @@ project (traffic_sim)
 set(SOURCES
     src/main.cpp
 	src/car.cpp
+	src/car_actions.cpp
 )
 
 # Add an executable with the above sources
