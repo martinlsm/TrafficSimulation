@@ -13,6 +13,11 @@ set(SOURCES
 	src/car_actions.cpp
 )
 
+# FIXME: Is this needed?
+set(TEST_SOURCES
+    test/vec2d_test.cpp
+)
+
 # Add an executable with the above sources
 add_executable(traffic_sim ${SOURCES})
 
@@ -24,3 +29,10 @@ target_include_directories(traffic_sim
 )
 
 target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
+
+option(PACKAGE_TESTS "Build the tests" ON)
+if(PACKAGE_TESTS)
+    enable_testing()
+    include(GoogleTest)
+    add_subdirectory(tests)
+endif()
