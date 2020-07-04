@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "car.h"
 
 #define _USE_MATH_DEFINES
@@ -14,9 +16,12 @@ void CarBody::update(const float dt) {
 	float speed = velocity.abs();
 	float speed_delta = speed * dt;
 	float steer_delta = steering_angle * speed_delta;
+	std::cout << "steer delta = " << steer_delta << std::endl;
 
 	this->velocity.rotate_left(steer_delta);
 	this->position += velocity;
+
+	std::cout << "steering angle = " << steering_angle << std::endl;
 }
 
 Vec2d<float> CarBody::getPos() const {
@@ -28,29 +33,18 @@ Vec2d<float> CarBody::getSize() const {
 }
 
 float CarBody::getRotation() const {
-	if (velocity.x == 0) {
-		return std::atan(velocity.y / (velocity.x + 0.001f));
-	}
-	return std::atan(velocity.y / velocity.x);
+	return velocity.v;
 }
 
 float CarBody::changeSpeed(const float amount_faster) {
 	float current_speed = velocity.abs();
 	float new_speed = current_speed + amount_faster;
-
-	if (new_speed > max_speed) {
-		float scaling = max_speed / current_speed;
-		velocity = scaling * velocity;
-	} else if (new_speed < 0) {
-		velocity = Vec2d<float>(0, 0);
-	} else {
-		float scaling = new_speed / current_speed;
-		velocity = scaling * velocity;
-	}
+	new_speed = std::max(0.0f, std::min(max_speed, new_speed));
+	velocity = PolarVec2d<float>(new_speed, velocity.v);
 }
 
 float CarBody::turn(const float amount_left) {
-	float new_angle = steering_angle + new_angle;
+	float new_angle = steering_angle + amount_left;
 
 	if (new_angle > max_steering_angle) {
 		steering_angle = max_steering_angle;

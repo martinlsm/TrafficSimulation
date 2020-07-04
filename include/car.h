@@ -1,8 +1,10 @@
 #pragma once
 
 #include "vec2d.h"
+#include "polar_vec2d.h"
 
 using geometry::Vec2d;
+using geometry::PolarVec2d;
 
 static const float CAR_HEIGHT = 32.0f;
 static const float CAR_WIDTH = 16.0f;
@@ -12,7 +14,7 @@ static const float MAX_SPEED = 20.0f;
 class CarBody {
 private:
 	Vec2d<float> position;
-	Vec2d<float> velocity;
+	PolarVec2d<float> velocity;
 	Vec2d<float> size;
 	float steering_angle;  // [-max_steering_angle, max_steering_angle]
 

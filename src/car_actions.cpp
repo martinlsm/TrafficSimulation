@@ -6,16 +6,18 @@ CarActionController::CarActionController(CarBody *car_body) {
 	this->car_body = car_body;
 }
 
+#define LIGHT_TURN (1.0f / 50.0f * 2.0f * M_PI)
+#define HARD_TURN (1.0f / 100.0f * 2.0f * M_PI)
 void CarActionController::doAction(const car_action action) {
 	// handle steering
 	if (action & TURN_LEFT_HARD) {
-		car_body->turn(3.0f / (2.0f * M_PI));
+		car_body->turn(HARD_TURN);
 	} else if (action & TURN_LEFT_LIGHT) {
-		car_body->turn(1.0f / (2.0f * M_PI));
+		car_body->turn(LIGHT_TURN);
 	} else if (action & TURN_RIGHT_HARD) {
-		car_body->turn(-3.0f / (2.0f * M_PI));
+		car_body->turn(-HARD_TURN);
 	} else if (action & TURN_RIGHT_LIGHT) {
-		car_body->turn(-1.0f / (2.0f * M_PI));
+		car_body->turn(-HARD_TURN);
 	}
 
 	// handle gasing and braking
