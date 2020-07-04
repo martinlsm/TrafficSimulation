@@ -19,9 +19,10 @@ private:
 		float rotation = car_body->getRotation();
 
 		sf::Transform t = sf::Transform::Identity;
-		t.translate(size.x / 2.0f, size.y / 2.0f);
-		//t.rotate(360.0f / (2 * M_PI) * rotation);
 		t.translate(position.x, position.y);
+		t.rotate(360.0f / (2 * M_PI) * rotation);
+		t.rotate(90.0f);
+		t.translate(size.x / 2.0f, size.y / 2.0f);
 		return t;
 	}
 
@@ -74,15 +75,6 @@ int main() {
 				car_action.doAction(CarAction::TURN_LEFT_LIGHT);
 			} else if (event.key.code == sf::Keyboard::D) {
 				car_action.doAction(CarAction::TURN_RIGHT_LIGHT);
-			}
-
-
-			if (event.key.code == sf::Keyboard::Escape) {
-				std::cout << "the escape key was pressed" << std::endl;
-				std::cout << "control:" << event.key.control << std::endl;
-				std::cout << "alt:" << event.key.alt << std::endl;
-				std::cout << "shift:" << event.key.shift << std::endl;
-				std::cout << "system:" << event.key.system << std::endl;
 			}
 		}
 
