@@ -6,7 +6,7 @@
 
 CarBody::CarBody(const float center_x, const float center_y)
 		: position(center_x, center_y),
-			velocity(0.0f, 0.001f),
+			velocity(0.0f, 0.0f),
 			size(CAR_WIDTH, CAR_HEIGHT),
 			steering_angle(0.0f),
 			max_steering_angle(MAX_STEERING_ANGLE),
@@ -16,12 +16,9 @@ void CarBody::update(const float dt) {
 	float speed = velocity.abs();
 	float speed_delta = speed * dt;
 	float steer_delta = steering_angle * speed_delta;
-	std::cout << "steer delta = " << steer_delta << std::endl;
 
 	this->velocity.rotate_left(steer_delta);
 	this->position += velocity;
-
-	std::cout << "steering angle = " << steering_angle << std::endl;
 }
 
 Vec2d<float> CarBody::getPos() const {

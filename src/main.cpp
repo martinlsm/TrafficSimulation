@@ -4,8 +4,7 @@
 
 #include "car.h"
 #include "car_actions.h"
-
-#define FRAME_RATE (30)
+#include "constants.h"
 
 class CarSprite {
 private:
@@ -22,7 +21,6 @@ private:
 		t.translate(position.x, position.y);
 		t.rotate(360.0f / (2 * M_PI) * rotation);
 		t.rotate(90.0f);
-		t.translate(size.x / 2.0f, size.y / 2.0f);
 		return t;
 	}
 
@@ -47,17 +45,15 @@ public:
 };
 
 int main() {
-	CarBody car{500, 300};
+	CarBody car{WORLD_WIDTH / 2, WORLD_HEIGHT / 2};
 	CarAction::CarActionController car_action{&car};
 	CarSprite car_sprite{&car};
 
 	sf::Clock clock;
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Traffic Simulation");
+    sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
 	window.setFramerateLimit(FRAME_RATE);
 
     while (window.isOpen()) {
-		std::cout << car.getPos() << ", " << car.getRotation() << std::endl;
-
 		// handle input
         sf::Event event;
 		while (window.pollEvent(event)) {
@@ -81,7 +77,6 @@ int main() {
 		// update state
 		sf::Time dt = clock.restart();
 		float dt_sec = dt.asSeconds();
-		std::cout << 1.f / dt_sec << std::endl;
 		car.update(dt_sec);
 
 		// render screen
