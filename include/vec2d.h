@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 namespace geometry {
 
@@ -18,6 +19,9 @@ struct Vec2d {
 
 	template<class U>
 	friend Vec2d<U> operator*(const U lhs, const Vec2d<U> &rhs);
+
+	template<class U>
+	friend std::ostream& operator<<(std::ostream &os, const Vec2d<U> &v);
 };
 
 template <class T>
@@ -59,6 +63,11 @@ Vec2d<T> operator+(const Vec2d<T> &v1, const Vec2d<T> &v2) {
 template <class T>
 Vec2d<T> operator*(const T lhs, const Vec2d<T> &rhs) {
 	return Vec2d<T>(lhs * rhs.x, lhs * rhs.y);
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream &os, const Vec2d<T> &v) {
+	return os << "(" << v.x << ", " << v.y << ")";
 }
 
 } // geometry
