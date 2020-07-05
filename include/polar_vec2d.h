@@ -12,7 +12,7 @@ struct PolarVec2d {
 	PolarVec2d(const T r, const float v);
 	const float abs();
 	void normalize();
-	void rotate_left(const float rad);
+	void rotate(const float rad);
 
 	template<class U>
 	friend PolarVec2d<U> operator*(const U lhs, const PolarVec2d<U> &rhs);
@@ -35,7 +35,7 @@ void PolarVec2d<T>::normalize() {
 }
 
 template <class T>
-void PolarVec2d<T>::rotate_left(const float rad) {
+void PolarVec2d<T>::rotate(const float rad) {
 	v += rad;
 }
 

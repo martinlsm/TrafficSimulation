@@ -11,13 +11,13 @@ CarActionController::CarActionController(CarBody *car_body) {
 void CarActionController::doAction(const car_action action) {
 	// handle steering
 	if (action & TURN_LEFT_HARD) {
-		car_body->turn(HARD_TURN);
+		car_body->turn(-HARD_TURN);
 	} else if (action & TURN_LEFT_LIGHT) {
-		car_body->turn(LIGHT_TURN);
+		car_body->turn(-LIGHT_TURN);
 	} else if (action & TURN_RIGHT_HARD) {
-		car_body->turn(-HARD_TURN);
+		car_body->turn(HARD_TURN);
 	} else if (action & TURN_RIGHT_LIGHT) {
-		car_body->turn(-HARD_TURN);
+		car_body->turn(HARD_TURN);
 	}
 
 	// handle gasing and braking

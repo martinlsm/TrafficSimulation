@@ -19,7 +19,7 @@ void CarBody::update(const float dt) {
 	float speed_delta = speed * dt;
 	float steer_delta = steering_angle * speed_delta;
 
-	this->velocity.rotate_left(steer_delta);
+	this->velocity.rotate(steer_delta);
 	this->position += velocity;
 }
 
@@ -42,8 +42,8 @@ float CarBody::changeSpeed(const float amount_faster) {
 	velocity = PolarVec2d<float>(new_speed, velocity.v);
 }
 
-float CarBody::turn(const float amount_left) {
-	float new_angle = steering_angle + amount_left;
+float CarBody::turn(const float amount_right) {
+	float new_angle = steering_angle + amount_right;
 
 	if (new_angle > max_steering_angle) {
 		steering_angle = max_steering_angle;

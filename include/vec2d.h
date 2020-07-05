@@ -13,7 +13,7 @@ struct Vec2d {
 	Vec2d(const T x, const T y);
 	const float abs();
 	void normalize();
-	void rotate_left(const float rad);
+	void rotate(const float rad);
 	void operator+=(const Vec2d<T> &rhs);
 	void operator+=(const PolarVec2d<T> &rhs);
 
@@ -43,7 +43,7 @@ void Vec2d<T>::normalize() {
 }
 
 template <class T>
-void Vec2d<T>::rotate_left(const float rad) {
+void Vec2d<T>::rotate(const float rad) {
 	float sin = std::sin(rad);	
 	float cos = std::cos(rad);
 	float new_x = cos * x - sin * y;

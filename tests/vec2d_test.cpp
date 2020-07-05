@@ -37,22 +37,22 @@ TEST(TestVec2d, RotateLeft) {
 	float b = 0.0f;
 	Vec2d<float> v{a, b};
 
-	v.rotate_left(M_PI / 2);
+	v.rotate(M_PI / 2);
 	ASSERT_NEAR(0.0f, v.x, 2.0e-7f);
 	ASSERT_NEAR(1.0f, v.y, 2.0e-7f);
 	EXPECT_FLOAT_EQ(1.0f, v.abs());
 
-	v.rotate_left(M_PI / 2);
+	v.rotate(M_PI / 2);
 	ASSERT_NEAR(-1.0f, v.x, 2.0e-7f);
 	ASSERT_NEAR(0.0f, v.y, 2.0e-7f);
 	EXPECT_FLOAT_EQ(1.0f, v.abs());
 
-	v.rotate_left(M_PI / 2);
+	v.rotate(M_PI / 2);
 	ASSERT_NEAR(0.0f, v.x, 2.0e-7f);
 	ASSERT_NEAR(-1.0f, v.y, 2.0e-7f);
 	EXPECT_FLOAT_EQ(1.0f, v.abs());
 
-	v.rotate_left(M_PI / 2);
+	v.rotate(M_PI / 2);
 	ASSERT_NEAR(1.0f, v.x, 2.0e-7f);
 	ASSERT_NEAR(0.0f, v.y, 2.0e-7f);
 	EXPECT_FLOAT_EQ(1.0f, v.abs());
@@ -60,7 +60,7 @@ TEST(TestVec2d, RotateLeft) {
 	float c = 1.0f;
 	float d = 1.0f;
 	v = Vec2d<float>{c, d};
-	v.rotate_left(-3.0f / 8.0f * (2.0f * M_PI));
+	v.rotate(-3.0f / 8.0f * (2.0f * M_PI));
 	ASSERT_NEAR(0.0f, v.x, 2.0e-7f);
 	ASSERT_NEAR(-std::sqrt(2.0f), v.y, 2.0e-7f);
 	EXPECT_FLOAT_EQ(std::sqrt(2.0f), v.abs());

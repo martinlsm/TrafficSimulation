@@ -31,7 +31,7 @@ public:
 	float getRotation() const;
 
 	float changeSpeed(const float amount_faster);
-	float turn(const float amount_left);
+	float turn(const float amount_right);
 };
 
 } // traffic

@@ -106,9 +106,9 @@ int main() {
 			} else if (event.key.code == sf::Keyboard::S) {
 				car_action.doAction(CarAction::BRAKE_MEDIUM);
 			} else if (event.key.code == sf::Keyboard::A) {
-				car_action.doAction(CarAction::TURN_LEFT_LIGHT);
+				car_action.doAction(CarAction::TURN_LEFT_HARD);
 			} else if (event.key.code == sf::Keyboard::D) {
-				car_action.doAction(CarAction::TURN_RIGHT_LIGHT);
+				car_action.doAction(CarAction::TURN_RIGHT_HARD);
 			}
 		}
 
