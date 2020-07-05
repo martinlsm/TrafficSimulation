@@ -3,6 +3,8 @@
 #include "car.h"
 #include <cstdint>
 
+using traffic::CarBody;
+
 namespace CarAction {
 
 typedef std::int64_t car_action;

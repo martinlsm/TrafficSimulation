@@ -6,6 +6,8 @@
 using geometry::Vec2d;
 using geometry::PolarVec2d;
 
+namespace traffic {
+
 static const float CAR_HEIGHT = 32.0f;
 static const float CAR_WIDTH = 16.0f;
 static const float MAX_STEERING_ANGLE = 0.05f * (2.0f*M_PI);
@@ -31,3 +33,5 @@ public:
 	float changeSpeed(const float amount_faster);
 	float turn(const float amount_left);
 };
+
+} // traffic

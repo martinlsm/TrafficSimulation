@@ -4,6 +4,8 @@
 
 #define _USE_MATH_DEFINES
 
+namespace traffic {
+
 CarBody::CarBody(const float center_x, const float center_y)
 		: position(center_x, center_y),
 			velocity(0.0f, 0.0f),
@@ -51,3 +53,5 @@ float CarBody::turn(const float amount_left) {
 		steering_angle = new_angle;
 	}
 }
+
+} // traffic

@@ -11,6 +11,7 @@ set(SOURCES
     src/main.cpp
 	src/car.cpp
 	src/car_actions.cpp
+	src/roadway.cpp
 )
 
 # FIXME: Is this needed?
