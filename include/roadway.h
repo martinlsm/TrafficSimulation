@@ -25,9 +25,14 @@ public:
 };
 
 class StraightRoad : public Road {
+private:
+	/* cached as fields for faster computation */
+	const float rotation; // [-pi/2, pi/2]
+	const float length;
 public:
-	using Road::Road;
+	StraightRoad(const Vec2d<float>& a, const Vec2d<float>& b, float width);
 	virtual bool inside(const CarBody &car) const;
+	float getRotation() const;
 	float getLength() const;
 };
 

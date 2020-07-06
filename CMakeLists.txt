@@ -14,11 +14,6 @@ set(SOURCES
 	src/roadway.cpp
 )
 
-# FIXME: Is this needed?
-set(TEST_SOURCES
-    test/vec2d_test.cpp
-)
-
 # Add an executable with the above sources
 add_executable(traffic_sim ${SOURCES})
 

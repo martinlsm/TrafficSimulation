@@ -86,7 +86,6 @@ int main() {
 	StraightRoad road {crossing_a, crossing_b, 75};
 	StraightRoadSprite road_sprite {&road};
 
-
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
 	window.setFramerateLimit(FRAME_RATE);
@@ -116,6 +115,8 @@ int main() {
 		sf::Time dt = clock.restart();
 		float dt_sec = dt.asSeconds();
 		car.update(dt_sec);
+
+		std::cout << road.inside(car) << std::endl;
 
 		// render screen
         window.clear();
