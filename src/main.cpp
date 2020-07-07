@@ -19,7 +19,7 @@ private:
 		Vec2d<float> crossing_b = road->getCrossingB();
 		float x = crossing_b.x - crossing_a.x;
 		float y = crossing_b.y - crossing_a.y;
-		float rotation = 180.0f / M_PI * std::atan(y / x);
+		float rotation = 180.0f / M_PI * std::atan2(y, x);
 		sf::Transform t = sf::Transform::Identity;
 		t.translate(crossing_a.x, crossing_a.y);
 		t.rotate(rotation);
@@ -115,8 +115,6 @@ int main() {
 		sf::Time dt = clock.restart();
 		float dt_sec = dt.asSeconds();
 		car.update(dt_sec);
-
-		std::cout << road.inside(car) << std::endl;
 
 		// render screen
         window.clear();

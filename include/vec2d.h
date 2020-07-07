@@ -16,6 +16,7 @@ struct Vec2d {
 	void rotate(const float rad);
 	void operator+=(const Vec2d<T> &rhs);
 	void operator+=(const PolarVec2d<T> &rhs);
+	void operator-=(const Vec2d<T> &rhs);
 
 	template<class U>
 	friend Vec2d<U> operator+(const Vec2d<U> &v1, const Vec2d<U> &v2);
@@ -65,6 +66,13 @@ void Vec2d<T>::operator+=(const PolarVec2d<T> &rhs) {
 	x += rhs_x;
 	y += rhs_y;
 }
+
+template <class T>
+void Vec2d<T>::operator-=(const Vec2d<T> &rhs) {
+	x -= rhs.x;
+	y -= rhs.y;
+}
+
 template <class T>
 Vec2d<T> operator+(const Vec2d<T> &v1, const Vec2d<T> &v2) {
 	return Vec2d<T>(v1.x + v2.x, v1.y + v2.y);

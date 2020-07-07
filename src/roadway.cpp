@@ -8,17 +8,16 @@ namespace traffic {
 	StraightRoad::StraightRoad(const Vec2d<float>& a,
 			const Vec2d<float>& b, float width)
 				: Road(a, b, width),
-				rotation(std::atan((b.y - a.y) / (b.x - a.x))),
+				rotation(std::atan2(b.y - a.y, b.x - a.x)),
    				length(std::hypot(b.x - a.x, b.y - a.y)) {}
 
 	bool StraightRoad::inside(const CarBody &car) const {
 		float road_rotation = this->getRotation();
 		Vec2d<float> car_pos = car.getPos();
+		car_pos -= a;
 		car_pos.rotate(-road_rotation);
-		return (car_pos.x >= std::min(a.x, b.x))
-				&& (car_pos.x <= std::max(a.x, b.x))
-				&& (car_pos.y >= std::min(a.y, b.y))
-				&& (car_pos.y <= std::max(a.y, b.y));
+		return car_pos.x >= 0 && car_pos.x <= length
+				&& car_pos.y >= -(width / 2) && car_pos.y <= width / 2;
 	}
 
 	float StraightRoad::getLength() const {
