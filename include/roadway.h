@@ -10,21 +10,21 @@ using geometry::Vec2d;
 
 namespace traffic {
 
-class Road {
+class RoadPiece {
 protected:
 	/* endpoints a and b */
 	const Vec2d<float> a;
 	const Vec2d<float> b;
 	const float width;
 public:
-	Road(const Vec2d<float> a, const Vec2d<float> b, float width);
+	RoadPiece(const Vec2d<float> a, const Vec2d<float> b, float width);
 	virtual bool inside(const CarBody &car) const = 0;
 	float getWidth() const;
 	Vec2d<float> getEndpointA() const;
 	Vec2d<float> getEndpointB() const;
 };
 
-class StraightRoad : public Road {
+class StraightRoad : public RoadPiece {
 private:
 	/* cached as fields for faster computation */
 	const float rotation; // [-pi/2, pi/2]
@@ -52,13 +52,11 @@ private:
 	/* coordinates of each crossing */
 	vector<Vec2d<float>> crossings;
 
-	/* roads (edges) between each crossing,
-	 * represented as indices in the crossings vector */
-	vector<Road*> roads;
+	vector<RoadPiece*> roads;
 public:
 	~Roadway();
 	void addCrossing(const Vec2d<float> location);
-	void addRoad(Road* road);
+	void addRoadPiece(RoadPiece* road_piece);
 
 	/* Returns true if the entire car is on the road, otherwise false */
 	bool inside(const CarBody &car) const;
