@@ -2,11 +2,11 @@
 
 namespace traffic {
 
-	Road::Road(const Vec2d<float>& a, const Vec2d<float>& b, float width)
+	Road::Road(const Vec2d<float> a, const Vec2d<float> b, float width)
 			: a(a), b(b), width(width) {}
 
-	StraightRoad::StraightRoad(const Vec2d<float>& a,
-			const Vec2d<float>& b, float width)
+	StraightRoad::StraightRoad(const Vec2d<float> a,
+			const Vec2d<float> b, float width)
 				: Road(a, b, width),
 				rotation(std::atan2(b.y - a.y, b.x - a.x)),
    				length(std::hypot(b.x - a.x, b.y - a.y)) {}
@@ -72,11 +72,11 @@ namespace traffic {
 		return width;
 	}
 
-	Vec2d<float> Road::getCrossingA() const {
+	Vec2d<float> Road::getEndpointA() const {
 		return a;
 	}
 
-	Vec2d<float> Road::getCrossingB() const {
+	Vec2d<float> Road::getEndpointB() const {
 		return b;
 	}
 

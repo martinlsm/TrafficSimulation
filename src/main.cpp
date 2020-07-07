@@ -17,8 +17,8 @@ public:
 	StraightRoadSprite(StraightRoad *road)
 			: rect(sf::Vector2f(road->getLength(), road->getWidth())),
 			transform(sf::Transform::Identity) {
-		Vec2d<float> c_a = road->getCrossingA();
-		Vec2d<float> c_b = road->getCrossingB();
+		Vec2d<float> c_a = road->getEndpointA();
+		Vec2d<float> c_b = road->getEndpointB();
 		float x = c_b.x - c_a.x;
 		float y = c_b.y - c_a.y;
 		float rotation = 180.0f / M_PI * std::atan2(y, x);
