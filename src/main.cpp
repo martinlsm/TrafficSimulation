@@ -11,29 +11,43 @@ using namespace traffic;
 
 class StraightRoadSprite {
 private:
-	StraightRoad *road;
+	sf::Transform transform;
 	sf::RectangleShape rect;
-
-	sf::Transform getTransform() {
-		Vec2d<float> crossing_a = road->getCrossingA();
-		Vec2d<float> crossing_b = road->getCrossingB();
-		float x = crossing_b.x - crossing_a.x;
-		float y = crossing_b.y - crossing_a.y;
-		float rotation = 180.0f / M_PI * std::atan2(y, x);
-		sf::Transform t = sf::Transform::Identity;
-		t.translate(crossing_a.x, crossing_a.y);
-		t.rotate(rotation);
-		t.translate(0, -road->getWidth() / 2.0f);
-		return t;
-	}
 public:
 	StraightRoadSprite(StraightRoad *road)
-			: road(road),
-			rect(sf::Vector2f(road->getLength(), road->getWidth())) {}
+			: rect(sf::Vector2f(road->getLength(), road->getWidth())),
+			transform(sf::Transform::Identity) {
+		Vec2d<float> c_a = road->getCrossingA();
+		Vec2d<float> c_b = road->getCrossingB();
+		float x = c_b.x - c_a.x;
+		float y = c_b.y - c_a.y;
+		float rotation = 180.0f / M_PI * std::atan2(y, x);
+		transform.translate(c_a.x, c_a.y);
+		transform.rotate(rotation);
+		transform.translate(0, -road->getWidth() / 2.0f);
+
+		rect.setFillColor(sf::Color(67, 67, 67));
+	}
 
 	void draw(sf::RenderWindow &window) {
-		sf::Transform transform = this->getTransform();
 		window.draw(rect, transform);
+	}
+};
+
+class CrossingSprite {
+private:
+	sf::CircleShape circ;
+public:
+	CrossingSprite(Crossing *crossing) {
+		float radius = crossing->getRadius();
+		circ.setRadius(radius);
+		Vec2d<float> pos = crossing->getPos();
+		circ.setPosition(pos.x - radius, pos.y - radius);
+		circ.setFillColor(sf::Color(67, 67, 67));
+	}
+
+	void draw(sf::RenderWindow &window) {
+		window.draw(circ);
 	}
 };
 
@@ -86,6 +100,11 @@ int main() {
 	StraightRoad road {crossing_a, crossing_b, 75};
 	StraightRoadSprite road_sprite {&road};
 
+	Crossing c_a {crossing_a, 75.0f / 2};
+	Crossing c_b {crossing_b, 75.0f / 2};
+	CrossingSprite crossing_sprite_a {&c_a};
+	CrossingSprite crossing_sprite_b {&c_b};
+
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
 	window.setFramerateLimit(FRAME_RATE);
@@ -119,6 +138,8 @@ int main() {
 		// render screen
         window.clear();
 		road_sprite.draw(window);
+		crossing_sprite_a.draw(window);
+		crossing_sprite_b.draw(window);
 		car_sprite.draw(window);
         window.display();
     }

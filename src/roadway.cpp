@@ -28,6 +28,23 @@ namespace traffic {
 		return rotation;
 	}
 
+	Crossing::Crossing(Vec2d<float> position, float radius)
+		: position(position), radius(radius) {}
+
+	bool Crossing::inside(const CarBody &car) const {
+		Vec2d<float> car_pos = car.getPos();
+		car_pos -= this->position;
+		return car_pos.abs() <= radius;
+	}
+
+	float Crossing::getRadius() const {
+		return radius;
+	}
+
+	Vec2d<float> Crossing::getPos() const {
+		return position;
+	}
+
 	Roadway::~Roadway() {
 		for (Road* r : roads) {
 			delete r;

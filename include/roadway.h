@@ -36,6 +36,17 @@ public:
 	float getLength() const;
 };
 
+class Crossing {
+private:
+	Vec2d<float> position;
+	const float radius;
+public:
+	Crossing(Vec2d<float> position, float radius);
+	bool inside(const CarBody &car) const;
+	float getRadius() const;
+	Vec2d<float> getPos() const;
+};
+
 class Roadway {
 private:
 	/* coordinates of each crossing */
