@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 #include "car.h"
 #include "car_actions.h"
@@ -9,13 +10,19 @@
 
 using namespace traffic;
 
-class StraightRoadSprite {
+class RoadPieceSprite {
+public:
+	virtual void draw(sf::RenderWindow &window) = 0;
+};
+
+class StraightRoadSprite : public RoadPieceSprite {
 private:
 	sf::Transform transform;
 	sf::RectangleShape rect;
 public:
 	StraightRoadSprite(StraightRoad *road)
-			: rect(sf::Vector2f(road->getLength(), road->getWidth())),
+			: RoadPieceSprite(),
+			rect(sf::Vector2f(road->getLength(), road->getWidth())),
 			transform(sf::Transform::Identity) {
 		Vec2d<float> c_a = road->getEndpointA();
 		Vec2d<float> c_b = road->getEndpointB();
@@ -34,11 +41,11 @@ public:
 	}
 };
 
-class CrossingSprite {
+class CrossingSprite : public RoadPieceSprite {
 private:
 	sf::CircleShape circ;
 public:
-	CrossingSprite(Crossing *crossing) {
+	CrossingSprite(Crossing *crossing) : RoadPieceSprite() {
 		float radius = crossing->getRadius();
 		circ.setRadius(radius);
 		Vec2d<float> pos = crossing->getPos();
@@ -97,17 +104,24 @@ int main() {
 
 	Roadway roadway;
 	Vec2d<float> p_a {100, 100};
-	Vec2d<float> p_b {700, 700};
-	StraightRoad road {p_a, p_b, 75};
+	Vec2d<float> p_b {400, 400};
+	Vec2d<float> p_c {700, 100};
+	StraightRoad road_a {p_a, p_b, 75};
+	StraightRoad road_b {p_b, p_c, 75};
 	Crossing c_a {p_a, 75.0f / 2};
 	Crossing c_b {p_b, 75.0f / 2};
-	roadway.addRoadPiece(&road);
+	roadway.addRoadPiece(&road_a);
+	roadway.addRoadPiece(&road_b);
 	roadway.addRoadPiece(&c_a);
 	roadway.addRoadPiece(&c_b);
 
-	StraightRoadSprite road_sprite {&road};
+	StraightRoadSprite road_sprite_a {&road_a};
+	StraightRoadSprite road_sprite_b {&road_b};
 	CrossingSprite crossing_sprite_a {&c_a};
 	CrossingSprite crossing_sprite_b {&c_b};
+
+	std::vector<RoadPieceSprite*> road_piece_sprites = {&road_sprite_a, &road_sprite_b,
+			&crossing_sprite_a, &crossing_sprite_b};
 
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
@@ -141,9 +155,9 @@ int main() {
 
 		// render screen
         window.clear();
-		road_sprite.draw(window);
-		crossing_sprite_a.draw(window);
-		crossing_sprite_b.draw(window);
+		for (RoadPieceSprite* rps : road_piece_sprites) {
+			rps->draw(window);
+		}
 		car_sprite.draw(window);
         window.display();
     }
