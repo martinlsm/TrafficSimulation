@@ -40,6 +40,7 @@ float CarBody::changeSpeed(const float amount_faster) {
 	float new_speed = current_speed + amount_faster;
 	new_speed = std::max(0.0f, std::min(max_speed, new_speed));
 	velocity = PolarVec2d<float>(new_speed, velocity.v);
+	return new_speed;
 }
 
 float CarBody::turn(const float amount_right) {
@@ -52,6 +53,7 @@ float CarBody::turn(const float amount_right) {
 	} else {
 		steering_angle = new_angle;
 	}
+	return steering_angle;
 }
 
 } // traffic
