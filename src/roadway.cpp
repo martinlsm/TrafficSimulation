@@ -2,12 +2,12 @@
 
 namespace traffic {
 
-	RoadPiece::RoadPiece(const Vec2d<float> a, const Vec2d<float> b, float width)
-			: a(a), b(b), width(width) {}
-
 	StraightRoad::StraightRoad(const Vec2d<float> a,
 			const Vec2d<float> b, float width)
-				: RoadPiece(a, b, width),
+				: RoadPiece(),
+				a(a),
+				b(b),
+				width(width),
 				rotation(std::atan2(b.y - a.y, b.x - a.x)),
    				length(std::hypot(b.x - a.x, b.y - a.y)) {}
 
@@ -29,7 +29,7 @@ namespace traffic {
 	}
 
 	Crossing::Crossing(Vec2d<float> position, float radius)
-		: position(position), radius(radius) {}
+		: RoadPiece(), position(position), radius(radius) {}
 
 	bool Crossing::inside(const CarBody &car) const {
 		Vec2d<float> car_pos = car.getPos();
@@ -51,10 +51,6 @@ namespace traffic {
 		}
 	}
 	
-	void Roadway::addCrossing(const Vec2d<float> location) {
-		crossings.push_back(location);
-	}
-
 	void Roadway::addRoadPiece(RoadPiece* road_piece) {
 		roads.push_back(road_piece);
 	}
@@ -68,15 +64,15 @@ namespace traffic {
 		return false;
 	}
 
-	float RoadPiece::getWidth() const {
+	float StraightRoad::getWidth() const {
 		return width;
 	}
 
-	Vec2d<float> RoadPiece::getEndpointA() const {
+	Vec2d<float> StraightRoad::getEndpointA() const {
 		return a;
 	}
 
-	Vec2d<float> RoadPiece::getEndpointB() const {
+	Vec2d<float> StraightRoad::getEndpointB() const {
 		return b;
 	}
 

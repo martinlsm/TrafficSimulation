@@ -95,13 +95,17 @@ int main() {
 	CarAction::CarActionController car_action{&car};
 	CarSprite car_sprite{&car};
 
-	Vec2d<float> crossing_a {100, 100};
-	Vec2d<float> crossing_b {700, 700};
-	StraightRoad road {crossing_a, crossing_b, 75};
-	StraightRoadSprite road_sprite {&road};
+	Roadway roadway;
+	Vec2d<float> p_a {100, 100};
+	Vec2d<float> p_b {700, 700};
+	StraightRoad road {p_a, p_b, 75};
+	Crossing c_a {p_a, 75.0f / 2};
+	Crossing c_b {p_b, 75.0f / 2};
+	roadway.addRoadPiece(&road);
+	roadway.addRoadPiece(&c_a);
+	roadway.addRoadPiece(&c_b);
 
-	Crossing c_a {crossing_a, 75.0f / 2};
-	Crossing c_b {crossing_b, 75.0f / 2};
+	StraightRoadSprite road_sprite {&road};
 	CrossingSprite crossing_sprite_a {&c_a};
 	CrossingSprite crossing_sprite_b {&c_b};
 

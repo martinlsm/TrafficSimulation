@@ -11,32 +11,31 @@ using geometry::Vec2d;
 namespace traffic {
 
 class RoadPiece {
-protected:
-	/* endpoints a and b */
-	const Vec2d<float> a;
-	const Vec2d<float> b;
-	const float width;
 public:
-	RoadPiece(const Vec2d<float> a, const Vec2d<float> b, float width);
 	virtual bool inside(const CarBody &car) const = 0;
-	float getWidth() const;
-	Vec2d<float> getEndpointA() const;
-	Vec2d<float> getEndpointB() const;
 };
 
 class StraightRoad : public RoadPiece {
 private:
+	/* endpoints a and b */
+	const Vec2d<float> a;
+	const Vec2d<float> b;
+	const float width;
+
 	/* cached as fields for faster computation */
-	const float rotation; // [-pi/2, pi/2]
+	const float rotation;
 	const float length;
 public:
 	StraightRoad(const Vec2d<float> a, const Vec2d<float> b, float width);
 	virtual bool inside(const CarBody &car) const;
+	float getWidth() const;
+	Vec2d<float> getEndpointA() const;
+	Vec2d<float> getEndpointB() const;
 	float getRotation() const;
 	float getLength() const;
 };
 
-class Crossing {
+class Crossing : public RoadPiece {
 private:
 	Vec2d<float> position;
 	const float radius;
@@ -49,13 +48,9 @@ public:
 
 class Roadway {
 private:
-	/* coordinates of each crossing */
-	vector<Vec2d<float>> crossings;
-
 	vector<RoadPiece*> roads;
 public:
 	~Roadway();
-	void addCrossing(const Vec2d<float> location);
 	void addRoadPiece(RoadPiece* road_piece);
 
 	/* Returns true if the entire car is on the road, otherwise false */
