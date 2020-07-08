@@ -45,18 +45,18 @@ namespace traffic {
 		return position;
 	}
 
+	Roadway::Roadway(vector<RoadPiece*> road_pieces) {
+		this->road_pieces = road_pieces;
+	}
+
 	Roadway::~Roadway() {
-		for (RoadPiece* r : roads) {
+		for (RoadPiece* r : road_pieces) {
 			delete r;
 		}
 	}
-	
-	void Roadway::addRoadPiece(RoadPiece* road_piece) {
-		roads.push_back(road_piece);
-	}
 
 	bool Roadway::inside(const CarBody &car) const {
-		for (RoadPiece* road_piece : roads) {
+		for (RoadPiece* road_piece : road_pieces) {
 			if (road_piece->inside(car)) {
 				return true;
 			}

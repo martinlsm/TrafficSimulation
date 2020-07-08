@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "roadway.h"
 #include "rendering.h"
+#include "game_world.h"
 
 using namespace traffic;
 
@@ -16,26 +17,9 @@ int main() {
 	CarAction::CarActionController car_action{&car};
 	CarSprite car_sprite{&car};
 
-	Roadway roadway;
-	Vec2d<float> p_a {100, 100};
-	Vec2d<float> p_b {400, 400};
-	Vec2d<float> p_c {700, 100};
-	StraightRoad road_a {p_a, p_b, 75};
-	StraightRoad road_b {p_b, p_c, 75};
-	Crossing c_a {p_a, 75.0f / 2};
-	Crossing c_b {p_b, 75.0f / 2};
-	roadway.addRoadPiece(&road_a);
-	roadway.addRoadPiece(&road_b);
-	roadway.addRoadPiece(&c_a);
-	roadway.addRoadPiece(&c_b);
-
-	StraightRoadSprite road_sprite_a {&road_a};
-	StraightRoadSprite road_sprite_b {&road_b};
-	CrossingSprite crossing_sprite_a {&c_a};
-	CrossingSprite crossing_sprite_b {&c_b};
-
-	std::vector<RoadPieceSprite*> road_piece_sprites = {&road_sprite_a, &road_sprite_b,
-			&crossing_sprite_a, &crossing_sprite_b};
+	vector<RoadPiece*> road_pieces = load_world(1);
+	Roadway game_world {road_pieces};
+	WorldRenderer world_renderer {road_pieces};
 
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
@@ -67,11 +51,14 @@ int main() {
 		float dt_sec = dt.asSeconds();
 		car.update(dt_sec);
 
+		std::cout << game_world.inside(car) << std::endl;
+
 		// render screen
         window.clear();
-		for (RoadPieceSprite* rps : road_piece_sprites) {
-			rps->draw(window);
-		}
+		world_renderer.draw(window);
+		// for (RoadPieceSprite* rps : road_piece_sprites) {
+		// 	rps->draw(window);
+		// }
 		car_sprite.draw(window);
         window.display();
     }

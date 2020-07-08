@@ -30,6 +30,15 @@ public:
 	void draw(sf::RenderWindow &window);
 };
 
+class WorldRenderer {
+private:
+	vector<RoadPieceSprite*> sprites;
+public:
+	WorldRenderer(vector<RoadPiece*> road_pieces);
+	~WorldRenderer();
+	void draw(sf::RenderWindow &window);
+};
+
 class CarSprite {
 private:
 	CarBody *car_body;

@@ -13,6 +13,7 @@ set(SOURCES
 	src/car_actions.cpp
 	src/roadway.cpp
 	src/rendering.cpp
+	src/game_world.cpp
 )
 
 # Add an executable with the above sources

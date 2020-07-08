@@ -32,6 +32,30 @@ void CrossingSprite::draw(sf::RenderWindow &window) {
 	window.draw(circ);
 }
 
+WorldRenderer::WorldRenderer(vector<RoadPiece*> road_pieces) {
+	for (RoadPiece* road_piece : road_pieces) {
+		if (typeid(*road_piece) == typeid(Crossing)) {
+			Crossing* crossing = dynamic_cast<Crossing*>(road_piece);
+			sprites.push_back(new CrossingSprite(crossing));
+		} else if (typeid(*road_piece) == typeid(StraightRoad)) {
+			StraightRoad* straight_road = dynamic_cast<StraightRoad*>(road_piece);
+			sprites.push_back(new StraightRoadSprite(straight_road));
+		}
+	}
+}
+
+WorldRenderer::~WorldRenderer() {
+	for (RoadPieceSprite* rps : sprites) {
+		delete rps;
+	}
+}
+
+void WorldRenderer::draw(sf::RenderWindow &window) {
+	for (RoadPieceSprite* sprite : sprites) {
+		sprite->draw(window);
+	}
+}
+
 sf::Transform CarSprite::getTransform() {
 	Vec2d<float> position = car_body->getPos();
 	Vec2d<float> size = car_body->getSize();

@@ -48,10 +48,10 @@ public:
 
 class Roadway {
 private:
-	vector<RoadPiece*> roads;
+	vector<RoadPiece*> road_pieces;
 public:
+	Roadway(vector<RoadPiece*> road_pieces);
 	~Roadway();
-	void addRoadPiece(RoadPiece* road_piece);
 
 	/* Returns true if the entire car is on the road, otherwise false */
 	bool inside(const CarBody &car) const;
