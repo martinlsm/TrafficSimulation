@@ -17,7 +17,9 @@ int main() {
 	CarAction::CarActionController car_action{&car};
 	CarSprite car_sprite{&car};
 
-	vector<RoadPiece*> road_pieces = load_world(1);
+	auto world_pair = load_world(1);
+	vector<RoadPiece*> road_pieces = world_pair.first;
+	vector<Vec2d<float>> goal_points = world_pair.second;
 	Roadway game_world {road_pieces};
 	WorldRenderer world_renderer {road_pieces};
 
@@ -56,9 +58,6 @@ int main() {
 		// render screen
         window.clear();
 		world_renderer.draw(window);
-		// for (RoadPieceSprite* rps : road_piece_sprites) {
-		// 	rps->draw(window);
-		// }
 		car_sprite.draw(window);
         window.display();
     }

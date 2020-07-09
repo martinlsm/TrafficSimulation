@@ -14,7 +14,7 @@ namespace traffic {
  *    |  |
  *    K  L
  */
-void load_world_1(vector<RoadPiece*> &v) {
+void load_world_1(vector<RoadPiece*> &v, vector<Vec2d<float>> &p) {
 	Vec2d<float> A {WORLD_WIDTH / 4.0f, 0.0f};
 	Vec2d<float> B {3.0f * WORLD_WIDTH / 4.0f, 0.0f};
 	Vec2d<float> C {0.0f, WORLD_HEIGHT / 4.0f};
@@ -41,20 +41,30 @@ void load_world_1(vector<RoadPiece*> &v) {
 	v.push_back(new StraightRoad(I, J, road_width));
 	v.push_back(new StraightRoad(H, K, road_width));
 	v.push_back(new StraightRoad(I, L, road_width));
+
+	p.push_back(A);
+	p.push_back(B);
+	p.push_back(C);
+	p.push_back(F);
+	p.push_back(G);
+	p.push_back(J);
+	p.push_back(K);
+	p.push_back(L);
 }
 
-vector<RoadPiece*> load_world(unsigned int id) {
+std::pair<vector<RoadPiece*>, vector<Vec2d<float>>> load_world(unsigned int id) {
 	vector<RoadPiece*> v;
+	vector<Vec2d<float>> p;
 	switch (id) {
 		case 1:
-			load_world_1(v);
+			load_world_1(v, p);
 			break;
 	}
 
 	if (v.empty()) {
 		throw std::invalid_argument("invalid world id");
 	}
-	return v;
+	return {v, p};
 }
 
 } // traffic
