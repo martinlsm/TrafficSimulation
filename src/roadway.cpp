@@ -28,20 +28,20 @@ namespace traffic {
 		return rotation;
 	}
 
-	Crossing::Crossing(Vec2d<float> position, float radius)
+	FilledCircularPiece::FilledCircularPiece(Vec2d<float> position, float radius)
 		: RoadPiece(), position(position), radius(radius) {}
 
-	bool Crossing::inside(const CarBody &car) const {
+	bool FilledCircularPiece::inside(const CarBody &car) const {
 		Vec2d<float> car_pos = car.getPos();
 		car_pos -= this->position;
 		return car_pos.abs() <= radius;
 	}
 
-	float Crossing::getRadius() const {
+	float FilledCircularPiece::getRadius() const {
 		return radius;
 	}
 
-	Vec2d<float> Crossing::getPos() const {
+	Vec2d<float> FilledCircularPiece::getPos() const {
 		return position;
 	}
 

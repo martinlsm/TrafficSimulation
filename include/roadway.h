@@ -35,12 +35,12 @@ public:
 	float getLength() const;
 };
 
-class Crossing : public RoadPiece {
+class FilledCircularPiece : public RoadPiece {
 private:
 	Vec2d<float> position;
 	const float radius;
 public:
-	Crossing(Vec2d<float> position, float radius);
+	FilledCircularPiece(Vec2d<float> position, float radius);
 	bool inside(const CarBody &car) const;
 	float getRadius() const;
 	Vec2d<float> getPos() const;

@@ -20,23 +20,24 @@ void StraightRoadSprite::draw(sf::RenderWindow &window) {
 	window.draw(rect, transform);
 }
 
-CrossingSprite::CrossingSprite(Crossing *crossing) : RoadPieceSprite() {
-	float radius = crossing->getRadius();
+FilledCircularPieceSprite::FilledCircularPieceSprite(
+		FilledCircularPiece *road_piece) : RoadPieceSprite() {
+	float radius = road_piece->getRadius();
 	circ.setRadius(radius);
-	Vec2d<float> pos = crossing->getPos();
+	Vec2d<float> pos = road_piece->getPos();
 	circ.setPosition(pos.x - radius, pos.y - radius);
 	circ.setFillColor(sf::Color(67, 67, 67));
 }
 
-void CrossingSprite::draw(sf::RenderWindow &window) {
+void FilledCircularPieceSprite::draw(sf::RenderWindow &window) {
 	window.draw(circ);
 }
 
 WorldRenderer::WorldRenderer(vector<RoadPiece*> road_pieces) {
 	for (RoadPiece* road_piece : road_pieces) {
-		if (typeid(*road_piece) == typeid(Crossing)) {
-			Crossing* crossing = dynamic_cast<Crossing*>(road_piece);
-			sprites.push_back(new CrossingSprite(crossing));
+		if (typeid(*road_piece) == typeid(FilledCircularPiece)) {
+			FilledCircularPiece* fcp = dynamic_cast<FilledCircularPiece*>(road_piece);
+			sprites.push_back(new FilledCircularPieceSprite(fcp));
 		} else if (typeid(*road_piece) == typeid(StraightRoad)) {
 			StraightRoad* straight_road = dynamic_cast<StraightRoad*>(road_piece);
 			sprites.push_back(new StraightRoadSprite(straight_road));

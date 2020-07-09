@@ -29,10 +29,6 @@ void load_world_1(vector<RoadPiece*> &v) {
 	Vec2d<float> L {3.0f * WORLD_WIDTH / 4.0f, WORLD_HEIGHT};
 	float road_width = 75.0f;
 
-	v.push_back(new Crossing(A, road_width / 2.0f));
-	v.push_back(new Crossing(B, road_width / 2.0f));
-	v.push_back(new Crossing(C, road_width / 2.0f));
-	v.push_back(new Crossing(D, road_width / 2.0f));
 	v.push_back(new StraightRoad(A, D, road_width));
 	v.push_back(new StraightRoad(B, E, road_width));
 	v.push_back(new StraightRoad(C, D, road_width));

@@ -22,11 +22,11 @@ public:
 	void draw(sf::RenderWindow &window);
 };
 
-class CrossingSprite : public RoadPieceSprite {
+class FilledCircularPieceSprite : public RoadPieceSprite {
 private:
 	sf::CircleShape circ;
 public:
-	CrossingSprite(Crossing *crossing);
+	FilledCircularPieceSprite(FilledCircularPiece *road_piece);
 	void draw(sf::RenderWindow &window);
 };
 
