@@ -5,6 +5,15 @@
 
 namespace traffic {
 
+Destination::Destination(Vec2d<float> position, float direction)
+        : position(position), direction(direction) {}
+
+bool Destination::inside(const Vec2d<float> p, const float margin) const {
+	Vec2d<float> diff = p;
+    diff -= this->position;
+    return diff.abs() <= margin;
+}
+
 /*
  *    A  B
  *    |  |
@@ -14,7 +23,7 @@ namespace traffic {
  *    |  |
  *    K  L
  */
-void load_world_1(vector<RoadPiece*> &v, vector<Vec2d<float>> &p) {
+void load_world_1(vector<RoadPiece*> &v, vector<Destination> &dests) {
 	Vec2d<float> A {WORLD_WIDTH / 4.0f, 0.0f};
 	Vec2d<float> B {3.0f * WORLD_WIDTH / 4.0f, 0.0f};
 	Vec2d<float> C {0.0f, WORLD_HEIGHT / 4.0f};
@@ -42,29 +51,29 @@ void load_world_1(vector<RoadPiece*> &v, vector<Vec2d<float>> &p) {
 	v.push_back(new StraightRoad(H, K, road_width));
 	v.push_back(new StraightRoad(I, L, road_width));
 
-	p.push_back(A);
-	p.push_back(B);
-	p.push_back(C);
-	p.push_back(F);
-	p.push_back(G);
-	p.push_back(J);
-	p.push_back(K);
-	p.push_back(L);
+	dests.push_back({A, M_PI / 2.0f});
+	dests.push_back({B, M_PI / 2.0f});
+	dests.push_back({C, 0.0f});
+	dests.push_back({F, M_PI});
+	dests.push_back({G, 0.0f});
+	dests.push_back({J, M_PI});
+	dests.push_back({K, 3.0f * M_PI / 2.0f});
+	dests.push_back({L, 3.0f * M_PI / 2.0f});
 }
 
-std::pair<vector<RoadPiece*>, vector<Vec2d<float>>> load_world(unsigned int id) {
+std::pair<vector<RoadPiece*>, vector<Destination>> load_world(unsigned int id) {
 	vector<RoadPiece*> v;
-	vector<Vec2d<float>> p;
+	vector<Destination> dests;
 	switch (id) {
 		case 1:
-			load_world_1(v, p);
+			load_world_1(v, dests);
 			break;
 	}
 
 	if (v.empty()) {
 		throw std::invalid_argument("invalid world id");
 	}
-	return {v, p};
+	return {v, dests};
 }
 
 } // traffic

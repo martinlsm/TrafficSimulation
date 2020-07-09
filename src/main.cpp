@@ -13,15 +13,16 @@
 using namespace traffic;
 
 int main() {
-	CarBody car{100, 100};
-	CarAction::CarActionController car_action{&car};
-	CarSprite car_sprite{&car};
-
 	auto world_pair = load_world(1);
 	vector<RoadPiece*> road_pieces = world_pair.first;
-	vector<Vec2d<float>> goal_points = world_pair.second;
+	vector<Destination> destinations = world_pair.second;
 	Roadway game_world {road_pieces};
 	WorldRenderer world_renderer {road_pieces};
+
+	Destination car_init_pos = destinations[0];
+	CarBody car{car_init_pos.position.x, car_init_pos.position.y, car_init_pos.direction};
+	CarAction::CarActionController car_action{&car};
+	CarSprite car_sprite{&car};
 
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");

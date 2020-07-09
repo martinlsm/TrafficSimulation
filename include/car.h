@@ -23,7 +23,7 @@ private:
 	const float max_steering_angle;
 	const float max_speed;
 public:
-	CarBody(const float center_x, const float center_y);
+	CarBody(const float center_x, const float center_y, const float direction);
 	void update(const float dt);
 
 	Vec2d<float> getPos() const;

@@ -6,9 +6,10 @@
 
 namespace traffic {
 
-CarBody::CarBody(const float center_x, const float center_y)
-		: position(center_x, center_y),
-			velocity(0.0f, 0.0f),
+CarBody::CarBody(const float center_x, const float center_y,
+		const float direction)
+			: position(center_x, center_y),
+			velocity(0.0f, direction),
 			size(CAR_WIDTH, CAR_HEIGHT),
 			steering_angle(0.0f),
 			max_steering_angle(MAX_STEERING_ANGLE),
