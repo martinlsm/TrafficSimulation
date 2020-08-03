@@ -28,6 +28,8 @@ target_include_directories(traffic_sim
 
 target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
 
+add_subdirectory(python_agent)
+
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)
     enable_testing()
