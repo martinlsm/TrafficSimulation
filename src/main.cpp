@@ -57,7 +57,7 @@ int main() {
 		std::cout << game_world.inside(car) << std::endl;
 
 		// render screen
-        window.clear();
+        window.clear({0x43,0x8a, 0x5e});
 		world_renderer.draw(window);
 		car_sprite.draw(window);
         window.display();
