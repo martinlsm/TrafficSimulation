@@ -1,10 +1,19 @@
-# set(AGENT_CPP_SOURCES
-# 	agent.cpp
-# )
+# find Numpy include path
+execute_process(
+	COMMAND "python3.8" -c
+		  "from __future__ import print_function\ntry: import numpy; print(numpy.get_include(), end='')\nexcept:pass\n"
+	RESULT_VARIABLE NUMPY_RESULT
+	OUTPUT_VARIABLE NUMPY_INCLUDE_PATH
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-# add_library(agent_cpp_lib SHARED ${AGENT_CPP_SOURCES})
-# target_include_directories(agent_cpp_lib PUBLIC)
+if (NOT ${NUMPY_RESULT})
+	message("Numpy found at ${NUMPY_INCLUDE_PATH}")
+else()
+	message("Could not find Numpy")
+endif()
 
+# find Swig
 find_package(SWIG 3.0 COMPONENTS python OPTIONAL_COMPONENTS cpp)
 if(SWIG_FOUND)
 	message("SWIG found: ${SWIG_EXECUTABLE}")
@@ -35,13 +44,6 @@ swig_link_libraries(agent PUBLIC ${PYTHON_LIBRARIES} -shared -lc)
 
 include_directories(agent
 	PRIVATE
-	"/home/martin/.local/lib/python3.8/site-packages/numpy/core/include"
-	"/usr/include/python3.8"
+	${NUMPY_INCLUDE_PATH}
 	${Python_INCLUDE_DIRS}
 )
-
-execute_process(COMMAND echo python3.8 "get_numpy_path.py"
-	WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-	OUTPUT_VARIABLE NUMPY_PATH)
-
-message(${NUMPY_PATH})
