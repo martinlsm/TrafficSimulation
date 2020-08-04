@@ -16,6 +16,8 @@ set(SOURCES
 	src/game_world.cpp
 )
 
+set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+
 # Add an executable with the above sources
 add_executable(traffic_sim ${SOURCES})
 
@@ -23,7 +25,7 @@ add_executable(traffic_sim ${SOURCES})
 # when running g++ these will be included as -I/directory/path/
 target_include_directories(traffic_sim
     PRIVATE 
-        ${PROJECT_SOURCE_DIR}/include
+	${PROJECT_INCLUDE_DIR}
 )
 
 target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
