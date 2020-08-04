@@ -1,7 +1,7 @@
-// void update_state(int size, double *state);
+#include "kappa.h"
 
 void update_state(int size, double *state) {
 	for (int i = 0; i < size; i++) {
-		state[i] += 1.0;
+		incr(&state[i]);
 	}
 }

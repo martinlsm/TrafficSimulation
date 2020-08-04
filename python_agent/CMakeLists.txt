@@ -21,15 +21,9 @@ endif()
 include(${SWIG_USE_FILE})
 
 find_package(PythonLibs)
-include_directories(${PYTHON_INCLUDE_PATH})
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${PYTHON_INCLUDE_PATH} ${PROJECT_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_SWIG_FLAGS "")
-
-set(AGENT_SOURCES
-	agent.i
-)
 
 set_source_files_properties(agent.i PROPERTY CPLUSPLUS ON)
 set_source_files_properties(agent.i PROPERTIES SWIG_FLAGS "-includeall")
@@ -37,13 +31,9 @@ set_source_files_properties(agent.i PROPERTIES SWIG_FLAGS "-includeall")
 swig_add_library(agent
 	 TYPE SHARED
 	 LANGUAGE python
-	 SOURCES ${AGENT_SOURCES}
+	 SOURCES agent.i
 )
 
-swig_link_libraries(agent PUBLIC ${PYTHON_LIBRARIES} -shared -lc)
+swig_link_libraries(agent PRIVATE ${PYTHON_LIBRARIES} -shared -lc)
 
-include_directories(agent
-	PRIVATE
-	${NUMPY_INCLUDE_PATH}
-	${Python_INCLUDE_DIRS}
-)
+include_directories(agent PRIVATE ${NUMPY_INCLUDE_PATH})
