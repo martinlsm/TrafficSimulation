@@ -28,12 +28,15 @@ set(CMAKE_SWIG_FLAGS "")
 set_source_files_properties(agent.i PROPERTY CPLUSPLUS ON)
 set_source_files_properties(agent.i PROPERTIES SWIG_FLAGS "-includeall")
 
+#set_property(SOURCE agent.i PROPERTY SWIG_MODULE_NAME agent)
 swig_add_library(agent
 	 TYPE SHARED
 	 LANGUAGE python
 	 SOURCES agent.i
 )
 
-swig_link_libraries(agent PRIVATE ${PYTHON_LIBRARIES} -shared -lc)
+#set_property(TARGET agent PROPERTY SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON)
+
+swig_link_libraries(agent PRIVATE traffic_framework ${PYTHON_LIBRARIES} -shared -lc)
 
 include_directories(agent PRIVATE ${NUMPY_INCLUDE_PATH})

@@ -1,34 +1,34 @@
 # Set the minimum version of CMake that can be used
 # To find the cmake version run
 # $ cmake --version
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.18)
 
 # Set the project name
-project (traffic_sim)
+project(traffic_sim)
 
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
-    src/main.cpp
 	src/car.cpp
 	src/car_actions.cpp
 	src/roadway.cpp
 	src/rendering.cpp
 	src/game_world.cpp
 )
-
-set(PROJECT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-
-# Add an executable with the above sources
-add_executable(traffic_sim ${SOURCES})
-
-# Set the directories that should be included in the build command for this target
-# when running g++ these will be included as -I/directory/path/
-target_include_directories(traffic_sim
-    PRIVATE 
-	${PROJECT_INCLUDE_DIR}
+set(MAIN_FILE
+	src/main.cpp
+)
+set(PROJECT_INCLUDE_DIR
+	${PROJECT_SOURCE_DIR}/include
 )
 
-target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
+add_library(traffic_framework SHARED ${SOURCES})
+target_include_directories(traffic_framework PUBLIC ${PROJECT_INCLUDE_DIR})
+target_link_libraries(traffic_framework -lsfml-graphics -lsfml-window -lsfml-system)
+
+# Add an executable with the above sources
+add_executable(traffic_sim ${MAIN_FILE})
+
+target_link_libraries(traffic_sim PUBLIC traffic_framework)
 
 add_subdirectory(python_agent)
 
