@@ -6,9 +6,10 @@ cmake_minimum_required(VERSION 3.5)
 # Set the project name
 project (traffic_sim)
 
+set(MAIN_FILE src/main.cpp)
+
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
-    src/main.cpp
 	src/car.cpp
 	src/car_actions.cpp
 	src/roadway.cpp
@@ -16,17 +17,13 @@ set(SOURCES
 	src/game_world.cpp
 )
 
+add_library(traffic_framework SHARED ${SOURCES})
+target_include_directories(traffic_framework PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(traffic_framework -lsfml-graphics -lsfml-window -lsfml-system)
+
 # Add an executable with the above sources
-add_executable(traffic_sim ${SOURCES})
-
-# Set the directories that should be included in the build command for this target
-# when running g++ these will be included as -I/directory/path/
-target_include_directories(traffic_sim
-    PRIVATE 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
-target_link_libraries(traffic_sim -lsfml-graphics -lsfml-window -lsfml-system)
+add_executable(traffic_sim ${MAIN_FILE} ${SOURCES})
+target_link_libraries(traffic_sim traffic_framework)
 
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)
