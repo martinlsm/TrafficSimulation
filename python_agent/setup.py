@@ -25,7 +25,9 @@ ext_modules = [
         sorted(['src/main.cpp',
                 'src/agent.cpp',
                 'src/cpp_src/car.cpp',
-                'src/cpp_src/car_actions.cpp']),
+                'src/cpp_src/car_actions.cpp',
+                'src/cpp_src/game_world.cpp',
+                'src/cpp_src/road_system.cpp',]),
         include_dirs=[
             # Path to pybind11 headers
             get_pybind_include(),

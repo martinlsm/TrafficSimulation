@@ -37,6 +37,11 @@ PYBIND11_MODULE(python_agent, m) {
 
 	 m.def("add_arrays_1d", &agent::add_arrays_1d);
 
+	m.def("load_traffic_environment", &agent::load_traffic_environment);
+	m.def("destination_count", &agent::destination_count);
+	m.def("car_count", &agent::car_count);
+	m.def("spawn_car", &agent::spawn_car);
+
 	m.def("read_state", &agent::read_state);
 
 #ifdef VERSION_INFO

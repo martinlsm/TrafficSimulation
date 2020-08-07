@@ -2,15 +2,34 @@
 
 namespace agent {
 
-// TODO: replace this
-static traffic::CarBody temp_car (42, 666, 0);
+// should this be global?
+static traffic::TrafficEnvironment environment = traffic::load_environment(1);
 
-py::array_t<float> read_state() {
-	Vec2d<float> pos = temp_car.getPos();
-	float rotation = temp_car.getRotation();
+void load_traffic_environment(unsigned int id) {
+	environment = traffic::load_environment(id);
+}
+
+size_t destination_count() {
+	return environment.destinations.size();
+}
+
+size_t car_count() {
+	return environment.active_cars.size();
+}
+
+void spawn_car(size_t dest_index) {
+	traffic::CarBody car = environment.destinations[dest_index].placeCar();
+	environment.active_cars.push_back(car);
+}
+
+py::array_t<float> read_state(size_t car_index) {
+	traffic::CarBody& car = environment.active_cars[car_index];
+	Vec2d<float> pos = car.getPos();
+	float rotation = car.getRotation();
 	auto result = py::array_t<float>(3);
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
+
 
 	res_data[0] = pos.x;
 	res_data[1] = pos.y;
