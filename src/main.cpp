@@ -6,7 +6,7 @@
 #include "car.h"
 #include "car_actions.h"
 #include "constants.h"
-#include "roadway.h"
+#include "road_system.h"
 #include "rendering.h"
 #include "game_world.h"
 
@@ -15,7 +15,7 @@ using namespace traffic;
 int main() {
 	TrafficEnvironment environment = load_environment(1);
 	vector<Destination> destinations = environment.destinations;
-	Roadway game_world = environment.roadway;
+	RoadSystem game_world = environment.road_system;
 	WorldRenderer world_renderer {game_world.road_pieces};
 
 	Destination car_init_pos = destinations[0];

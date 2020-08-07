@@ -46,11 +46,11 @@ public:
 	Vec2d<float> getPos() const;
 };
 
-struct Roadway {
+struct RoadSystem {
 	vector<RoadPiece*> road_pieces;
 
-	Roadway(vector<RoadPiece*> road_pieces);
-	~Roadway();
+	RoadSystem(vector<RoadPiece*> road_pieces);
+	~RoadSystem();
 
 	/* Returns true if the entire car is on the road, otherwise false */
 	bool inside(const CarBody &car) const;

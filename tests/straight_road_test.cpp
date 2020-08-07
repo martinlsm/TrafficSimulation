@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "roadway.h"
+#include "road_system.h"
 
 using geometry::Vec2d;
 using traffic::StraightRoad;

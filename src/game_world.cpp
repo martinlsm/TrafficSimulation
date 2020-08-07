@@ -1,7 +1,7 @@
 #include <stdexcept>
 
 #include "game_world.h"
-#include "roadway.h"
+#include "road_system.h"
 
 namespace traffic {
 
@@ -73,7 +73,7 @@ TrafficEnvironment load_environment(unsigned int id) {
 	if (v.empty()) {
 		throw std::invalid_argument("invalid world id");
 	}
-	return {Roadway{v}, dests, {}};
+	return {RoadSystem{v}, dests, {}};
 }
 
 } // namespace traffic

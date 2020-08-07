@@ -1,4 +1,4 @@
-#include "roadway.h"
+#include "road_system.h"
 
 namespace traffic {
 
@@ -45,17 +45,17 @@ namespace traffic {
 		return position;
 	}
 
-	Roadway::Roadway(vector<RoadPiece*> road_pieces) {
+	RoadSystem::RoadSystem(vector<RoadPiece*> road_pieces) {
 		this->road_pieces = road_pieces;
 	}
 
-	Roadway::~Roadway() {
+	RoadSystem::~RoadSystem() {
 		for (RoadPiece* r : road_pieces) {
 			delete r;
 		}
 	}
 
-	bool Roadway::inside(const CarBody &car) const {
+	bool RoadSystem::inside(const CarBody &car) const {
 		for (RoadPiece* road_piece : road_pieces) {
 			if (road_piece->inside(car)) {
 				return true;

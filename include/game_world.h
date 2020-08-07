@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "roadway.h"
+#include "road_system.h"
 #include "constants.h"
 
 namespace traffic {
@@ -19,7 +19,7 @@ struct Destination {
 };
 
 struct TrafficEnvironment {
-	Roadway roadway;
+	RoadSystem road_system;
 	vector<Destination> destinations;
 	vector<CarBody> active_cars;
 };

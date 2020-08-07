@@ -12,7 +12,7 @@ set(MAIN_FILE src/main.cpp)
 set(SOURCES
 	src/car.cpp
 	src/car_actions.cpp
-	src/roadway.cpp
+	src/road_system.cpp
 	src/rendering.cpp
 	src/game_world.cpp
 )
