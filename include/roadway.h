@@ -46,10 +46,9 @@ public:
 	Vec2d<float> getPos() const;
 };
 
-class Roadway {
-private:
+struct Roadway {
 	vector<RoadPiece*> road_pieces;
-public:
+
 	Roadway(vector<RoadPiece*> road_pieces);
 	~Roadway();
 

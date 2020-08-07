@@ -7,6 +7,9 @@
 
 namespace traffic {
 
+/*
+ * Cars spawn and end at Destinations
+ */
 struct Destination {
 	const Vec2d<float> position;
 	const float direction;
@@ -15,10 +18,12 @@ struct Destination {
 	bool inside(const Vec2d<float> p, const float margin) const;
 };
 
-/*
- * Returns all road pieces for a game world and possible starting-
- * and end points for cars.
- */
-std::pair<vector<RoadPiece*>, vector<Destination>> load_world(unsigned int id);
+struct TrafficEnvironment {
+	Roadway roadway;
+	vector<Destination> destinations;
+	vector<CarBody> active_cars;
+};
 
-} // traffic
+TrafficEnvironment load_environment(unsigned int id);
+
+} // namespace traffic

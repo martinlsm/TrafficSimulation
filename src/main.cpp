@@ -13,11 +13,10 @@
 using namespace traffic;
 
 int main() {
-	auto world_pair = load_world(1);
-	vector<RoadPiece*> road_pieces = world_pair.first;
-	vector<Destination> destinations = world_pair.second;
-	Roadway game_world {road_pieces};
-	WorldRenderer world_renderer {road_pieces};
+	TrafficEnvironment environment = load_environment(1);
+	vector<Destination> destinations = environment.destinations;
+	Roadway game_world = environment.roadway;
+	WorldRenderer world_renderer {game_world.road_pieces};
 
 	Destination car_init_pos = destinations[0];
 	CarBody car{car_init_pos.position.x, car_init_pos.position.y, car_init_pos.direction};

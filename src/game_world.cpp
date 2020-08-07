@@ -61,7 +61,7 @@ void load_world_1(vector<RoadPiece*> &v, vector<Destination> &dests) {
 	dests.push_back({L, 3.0f * M_PI / 2.0f});
 }
 
-std::pair<vector<RoadPiece*>, vector<Destination>> load_world(unsigned int id) {
+TrafficEnvironment load_environment(unsigned int id) {
 	vector<RoadPiece*> v;
 	vector<Destination> dests;
 	switch (id) {
@@ -73,7 +73,7 @@ std::pair<vector<RoadPiece*>, vector<Destination>> load_world(unsigned int id) {
 	if (v.empty()) {
 		throw std::invalid_argument("invalid world id");
 	}
-	return {v, dests};
+	return {Roadway{v}, dests, {}};
 }
 
-} // traffic
+} // namespace traffic
