@@ -8,6 +8,11 @@ namespace traffic {
 Destination::Destination(Vec2d<float> position, float direction)
         : position(position), direction(direction) {}
 
+
+CarBody Destination::placeCar() {
+	return CarBody{position.x, position.y, direction};
+}
+
 bool Destination::inside(const Vec2d<float> p, const float margin) const {
 	Vec2d<float> diff = p;
     diff -= this->position;

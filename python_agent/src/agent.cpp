@@ -1,4 +1,5 @@
 #include "agent.h"
+#include <cmath>
 
 namespace agent {
 
@@ -24,16 +25,26 @@ void spawn_car(size_t dest_index) {
 
 py::array_t<float> read_state(size_t car_index) {
 	traffic::CarBody& car = environment.active_cars[car_index];
+
 	Vec2d<float> pos = car.getPos();
+	float speed = car.getSpeed();
+
 	float rotation = car.getRotation();
-	auto result = py::array_t<float>(3);
+	float rot_x = std::cos(rotation);
+	float rot_y = std::sin(rotation);
+
+	float steering_angle = car.getSteeringAngle();
+
+	auto result = py::array_t<float>(6);
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
-
 	res_data[0] = pos.x;
 	res_data[1] = pos.y;
-	res_data[2] = rotation;
+	res_data[2] = speed;
+	res_data[3] = rot_x;
+	res_data[4] = rot_y;
+	res_data[5] = steering_angle;
 	
 	return result;
 }

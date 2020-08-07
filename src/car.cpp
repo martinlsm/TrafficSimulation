@@ -32,8 +32,16 @@ Vec2d<float> CarBody::getSize() const {
 	return size;
 }
 
+float CarBody::getSpeed() const {
+	return velocity.r;
+}
+
 float CarBody::getRotation() const {
 	return velocity.v;
+}
+
+float CarBody::getSteeringAngle() const {
+	return steering_angle;
 }
 
 float CarBody::changeSpeed(const float amount_faster) {

@@ -28,7 +28,9 @@ public:
 
 	Vec2d<float> getPos() const;
 	Vec2d<float> getSize() const;
+	float getSpeed() const;
 	float getRotation() const;
+	float getSteeringAngle() const;
 
 	float changeSpeed(const float amount_faster);
 	float turn(const float amount_right);
