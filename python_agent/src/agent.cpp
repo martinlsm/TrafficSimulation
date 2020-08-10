@@ -52,4 +52,15 @@ py::array_t<float> read_state(size_t car_index) {
 	return result;
 }
 
+int get_reward(size_t car_index) {
+	traffic::car_state state = environment->getCarState(car_index);
+	switch (state) {
+		case traffic::OFF_ROAD:
+			return -1;
+		case traffic::REACHED_GOAL:
+			return 1;
+	}
+	return 0;
+}
+
 } // namespace agent

@@ -51,7 +51,7 @@ int main() {
 		float dt_sec = dt.asSeconds();
 		environment->update(dt_sec);
 
-		std::cout << environment->getCarState(car_id) << std::endl;
+		std::cout << (int)environment->getCarState(car_id) << std::endl;
 
 		// render screen
         window.clear({0x43,0x8a, 0x5e});

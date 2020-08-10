@@ -15,20 +15,8 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(car_id, 1)
         state = pa.read_state(car_id)
         self.assertEqual(len(state), 6)
-
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
-
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
-
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+        reward = pa.get_reward(car_id)
+        self.assertEqual(reward, 0)
 
 if __name__ == '__main__':
     unittest.main()
