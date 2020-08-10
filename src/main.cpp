@@ -18,7 +18,6 @@ int main() {
 
 	unsigned long car_id = environment->spawn_car(0, 4);
 	CarMechanics* car = environment->getCarMechanics(car_id);
-	CarAction::CarActionController car_action{car};
 	CarSprite car_sprite{car};
 
 	sf::Clock clock;
@@ -36,13 +35,13 @@ int main() {
 			}
 
 			if (event.key.code == sf::Keyboard::W) {
-				car_action.doAction(CarAction::GAS_MEDIUM);
+				do_action(car, GAS_MEDIUM);
 			} else if (event.key.code == sf::Keyboard::S) {
-				car_action.doAction(CarAction::BRAKE_MEDIUM);
+				do_action(car, BRAKE_MEDIUM);
 			} else if (event.key.code == sf::Keyboard::A) {
-				car_action.doAction(CarAction::TURN_LEFT_HARD);
+				do_action(car, TURN_LEFT_HARD);
 			} else if (event.key.code == sf::Keyboard::D) {
-				car_action.doAction(CarAction::TURN_RIGHT_HARD);
+				do_action(car, TURN_RIGHT_HARD);
 			}
 		}
 

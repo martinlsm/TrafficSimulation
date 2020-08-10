@@ -3,9 +3,7 @@
 #include "car.h"
 #include <cstdint>
 
-using traffic::CarMechanics;
-
-namespace CarAction {
+namespace traffic {
 
 typedef std::int64_t car_action;
 const car_action BRAKE_LIGHT       = 1L <<  0;
@@ -21,12 +19,6 @@ const car_action TURN_RIGHT_LIGHT  = 1L <<  9;
 const car_action TURN_RIGHT_MEDIUM = 1L << 10;
 const car_action TURN_RIGHT_HARD   = 1L << 11;
 
-class CarActionController {
-private:
-	CarMechanics *car_body;
-public:
-	CarActionController(CarMechanics *car_body);
-	void doAction(const car_action action);
-};
+void do_action(CarMechanics* car, const car_action action);
 
-} // CarAction
+} // namespace traffic
