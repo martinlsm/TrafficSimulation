@@ -13,7 +13,7 @@ StraightRoad::StraightRoad(const Vec2d<float> a,
 
 StraightRoad::~StraightRoad() {}
 
-bool StraightRoad::inside(const CarBody &car) const {
+bool StraightRoad::inside(const CarMechanics &car) const {
 	float road_rotation = this->getRotation();
 	Vec2d<float> car_pos = car.getPos();
 	car_pos -= a;
@@ -35,7 +35,7 @@ FilledCircularPiece::FilledCircularPiece(Vec2d<float> position, float radius)
 
 FilledCircularPiece::~FilledCircularPiece() {}
 
-bool FilledCircularPiece::inside(const CarBody &car) const {
+bool FilledCircularPiece::inside(const CarMechanics &car) const {
 	Vec2d<float> car_pos = car.getPos();
 	car_pos -= this->position;
 	return car_pos.abs() <= radius;
@@ -59,7 +59,7 @@ RoadSystem::~RoadSystem() {
 	}
 }
 
-bool RoadSystem::inside(const CarBody &car) const {
+bool RoadSystem::inside(const CarMechanics &car) const {
 	for (RoadPiece* road_piece : road_pieces) {
 		if (road_piece->inside(car)) {
 			return true;

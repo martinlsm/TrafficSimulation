@@ -74,7 +74,7 @@ sf::Transform CarSprite::getTransform() {
 	return t;
 }
 
-CarSprite::CarSprite(CarBody *car_body) {
+CarSprite::CarSprite(CarMechanics *car_body) {
 	this->car_body = car_body;
 
 	// load car image asset

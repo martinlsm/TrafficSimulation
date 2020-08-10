@@ -13,7 +13,7 @@ namespace traffic {
 class RoadPiece {
 public:
 	virtual ~RoadPiece() {};
-	virtual bool inside(const CarBody &car) const = 0;
+	virtual bool inside(const CarMechanics &car) const = 0;
 };
 
 class StraightRoad : public RoadPiece {
@@ -29,7 +29,7 @@ private:
 public:
 	StraightRoad(const Vec2d<float> a, const Vec2d<float> b, float width);
 	~StraightRoad() override;
-	virtual bool inside(const CarBody &car) const;
+	virtual bool inside(const CarMechanics &car) const;
 	float getWidth() const;
 	Vec2d<float> getEndpointA() const;
 	Vec2d<float> getEndpointB() const;
@@ -44,7 +44,7 @@ private:
 public:
 	FilledCircularPiece(Vec2d<float> position, float radius);
 	~FilledCircularPiece() override;
-	bool inside(const CarBody &car) const;
+	bool inside(const CarMechanics &car) const;
 	float getRadius() const;
 	Vec2d<float> getPos() const;
 };
@@ -56,7 +56,7 @@ struct RoadSystem {
 	~RoadSystem();
 
 	/* Returns true if the entire car is on the road, otherwise false */
-	bool inside(const CarBody &car) const;
+	bool inside(const CarMechanics &car) const;
 };
 
 } // namespace traffic

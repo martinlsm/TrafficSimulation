@@ -6,7 +6,7 @@
 
 namespace traffic {
 
-CarBody::CarBody(const float center_x, const float center_y,
+CarMechanics::CarMechanics(const float center_x, const float center_y,
 		const float direction)
 			: position(center_x, center_y),
 			velocity(0.0f, direction),
@@ -15,7 +15,7 @@ CarBody::CarBody(const float center_x, const float center_y,
 			max_steering_angle(MAX_STEERING_ANGLE),
 			max_speed(MAX_SPEED) {}
 
-void CarBody::update(const float dt) {
+void CarMechanics::update(const float dt) {
 	float speed = velocity.abs();
 	float speed_delta = speed * dt;
 	float steer_delta = steering_angle * speed_delta;
@@ -24,27 +24,27 @@ void CarBody::update(const float dt) {
 	this->position += velocity;
 }
 
-Vec2d<float> CarBody::getPos() const {
+Vec2d<float> CarMechanics::getPos() const {
 	return position;
 }
 
-Vec2d<float> CarBody::getSize() const {
+Vec2d<float> CarMechanics::getSize() const {
 	return size;
 }
 
-float CarBody::getSpeed() const {
+float CarMechanics::getSpeed() const {
 	return velocity.r;
 }
 
-float CarBody::getRotation() const {
+float CarMechanics::getRotation() const {
 	return velocity.v;
 }
 
-float CarBody::getSteeringAngle() const {
+float CarMechanics::getSteeringAngle() const {
 	return steering_angle;
 }
 
-float CarBody::changeSpeed(const float amount_faster) {
+float CarMechanics::changeSpeed(const float amount_faster) {
 	float current_speed = velocity.abs();
 	float new_speed = current_speed + amount_faster;
 	new_speed = std::max(0.0f, std::min(max_speed, new_speed));
@@ -52,7 +52,7 @@ float CarBody::changeSpeed(const float amount_faster) {
 	return new_speed;
 }
 
-float CarBody::turn(const float amount_right) {
+float CarMechanics::turn(const float amount_right) {
 	float new_angle = steering_angle + amount_right;
 
 	if (new_angle > max_steering_angle) {

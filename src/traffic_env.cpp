@@ -8,8 +8,8 @@ namespace traffic {
 Destination::Destination(Vec2d<float> position, float direction)
 		: position(position), direction(direction) {}
 
-CarBody Destination::placeCar() {
-	return CarBody{position.x, position.y, direction};
+CarMechanics Destination::placeCar() {
+	return CarMechanics{position.x, position.y, direction};
 }
 
 bool Destination::inside(const Vec2d<float> p, const float margin) const {
@@ -30,9 +30,9 @@ car_state TrafficEnvironment::getCarState(const unsigned long car_id) const {
 	return car.state;
 }
 
-CarBody* TrafficEnvironment::getCarBody(unsigned long car_id) {
+CarMechanics* TrafficEnvironment::getCarMechanics(unsigned long car_id) {
 	auto it = active_cars.find(car_id);
-	CarBody& body = it->second.body;
+	CarMechanics& body = it->second.body;
 	return &body;
 }
 

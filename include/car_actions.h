@@ -3,7 +3,7 @@
 #include "car.h"
 #include <cstdint>
 
-using traffic::CarBody;
+using traffic::CarMechanics;
 
 namespace CarAction {
 
@@ -23,9 +23,9 @@ const car_action TURN_RIGHT_HARD   = 1L << 11;
 
 class CarActionController {
 private:
-	CarBody *car_body;
+	CarMechanics *car_body;
 public:
-	CarActionController(CarBody *car_body);
+	CarActionController(CarMechanics *car_body);
 	void doAction(const car_action action);
 };
 

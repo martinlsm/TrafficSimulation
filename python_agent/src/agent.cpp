@@ -27,7 +27,7 @@ unsigned long spawn_car(size_t start, size_t goal) {
 }
 
 py::array_t<float> read_state(size_t car_index) {
-	traffic::CarBody* car = environment->getCarBody(car_index);
+	traffic::CarMechanics* car = environment->getCarMechanics(car_index);
 
 	Vec2d<float> pos = car->getPos();
 	float speed = car->getSpeed();

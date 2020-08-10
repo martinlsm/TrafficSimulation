@@ -2,7 +2,7 @@
 
 namespace CarAction {
 
-CarActionController::CarActionController(CarBody *car_body) {
+CarActionController::CarActionController(CarMechanics *car_body) {
 	this->car_body = car_body;
 }
 

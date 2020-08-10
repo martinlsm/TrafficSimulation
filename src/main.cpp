@@ -17,7 +17,7 @@ int main() {
 	WorldRenderer world_renderer {environment->road_system->road_pieces};
 
 	unsigned long car_id = environment->spawn_car(0, 4);
-	CarBody* car = environment->getCarBody(car_id);
+	CarMechanics* car = environment->getCarMechanics(car_id);
 	CarAction::CarActionController car_action{car};
 	CarSprite car_sprite{car};
 

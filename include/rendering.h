@@ -44,12 +44,12 @@ public:
 
 class CarSprite {
 private:
-	CarBody* car_body;
+	CarMechanics* car_body;
 	sf::Texture texture;
 	sf::Sprite sprite;
 	
 	sf::Transform getTransform();
 public:
-	CarSprite(CarBody *car_body);
+	CarSprite(CarMechanics *car_body);
 	void draw(sf::RenderWindow &window);
 };

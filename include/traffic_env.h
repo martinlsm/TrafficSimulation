@@ -15,7 +15,7 @@ struct Destination {
 	const Vec2d<float> position;
 	const float direction;
 	Destination(Vec2d<float> position, float direction);
-	CarBody placeCar();
+	CarMechanics placeCar();
 	bool inside(const Vec2d<float> p, const float margin) const;
 };
 
@@ -27,7 +27,7 @@ const car_state OFF_ROAD     = 3;
 const car_state REACHED_GOAL = 4;
 
 struct Car {
-	CarBody body;
+	CarMechanics body;
 	Destination* goal;
 	car_state state = INACTIVE;
 };
@@ -44,7 +44,7 @@ public:
 	TrafficEnvironment(const TrafficEnvironment&) = delete;
 
 	car_state getCarState(const unsigned long car_id) const;
-	CarBody* getCarBody(unsigned long car_id);
+	CarMechanics* getCarMechanics(unsigned long car_id);
 	size_t destination_count() const;
 	size_t car_count() const;
 
