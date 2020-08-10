@@ -17,7 +17,7 @@ set(SOURCES
 	src/car_actions.cpp
 	src/road_system.cpp
 	src/rendering.cpp
-	src/game_world.cpp
+	src/traffic_env.cpp
 )
 
 add_library(traffic_framework SHARED ${SOURCES})

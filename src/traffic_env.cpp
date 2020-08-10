@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "game_world.h"
+#include "traffic_env.h"
 #include "road_system.h"
 
 namespace traffic {

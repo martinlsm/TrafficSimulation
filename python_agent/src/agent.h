@@ -3,7 +3,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
-#include "game_world.h"
+#include "traffic_env.h"
 
 namespace py = pybind11;
 

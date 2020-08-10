@@ -8,7 +8,7 @@
 #include "constants.h"
 #include "road_system.h"
 #include "rendering.h"
-#include "game_world.h"
+#include "traffic_env.h"
 
 using namespace traffic;
 
