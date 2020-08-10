@@ -16,6 +16,8 @@ StraightRoadSprite::StraightRoadSprite(StraightRoad* road)
 	rect.setFillColor(sf::Color(67, 67, 67));
 }
 
+StraightRoadSprite::~StraightRoadSprite() {}
+
 void StraightRoadSprite::draw(sf::RenderWindow &window) {
 	window.draw(rect, transform);
 }
@@ -29,11 +31,13 @@ FilledCircularPieceSprite::FilledCircularPieceSprite(
 	circ.setFillColor(sf::Color(67, 67, 67));
 }
 
+FilledCircularPieceSprite::~FilledCircularPieceSprite() {}
+
 void FilledCircularPieceSprite::draw(sf::RenderWindow &window) {
 	window.draw(circ);
 }
 
-WorldRenderer::WorldRenderer(vector<RoadPiece*> road_pieces) {
+WorldRenderer::WorldRenderer(vector<RoadPiece*>& road_pieces) {
 	for (RoadPiece* road_piece : road_pieces) {
 		if (typeid(*road_piece) == typeid(FilledCircularPiece)) {
 			FilledCircularPiece* fcp = dynamic_cast<FilledCircularPiece*>(road_piece);

@@ -13,15 +13,13 @@
 using namespace traffic;
 
 int main() {
-	TrafficEnvironment environment = load_environment(1);
-	vector<Destination> destinations = environment.destinations;
-	RoadSystem game_world = environment.road_system;
-	WorldRenderer world_renderer {game_world.road_pieces};
+	TrafficEnvironment* environment = load_environment(1);
+	WorldRenderer world_renderer {environment->road_system->road_pieces};
 
-	Destination car_init_pos = destinations[0];
-	CarBody car{car_init_pos.position.x, car_init_pos.position.y, car_init_pos.direction};
-	CarAction::CarActionController car_action{&car};
-	CarSprite car_sprite{&car};
+	unsigned long car_id = environment->spawn_car(0, 4);
+	CarBody* car = environment->getCarBody(car_id);
+	CarAction::CarActionController car_action{car};
+	CarSprite car_sprite{car};
 
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
@@ -51,9 +49,9 @@ int main() {
 		// update state
 		sf::Time dt = clock.restart();
 		float dt_sec = dt.asSeconds();
-		car.update(dt_sec);
+		environment->update(dt_sec);
 
-		std::cout << game_world.inside(car) << std::endl;
+		std::cout << environment->getCarState(car_id) << std::endl;
 
 		// render screen
         window.clear({0x43,0x8a, 0x5e});
@@ -61,6 +59,9 @@ int main() {
 		car_sprite.draw(window);
         window.display();
     }
+
+	delete environment->road_system;
+	delete environment;
 
     return 0;
 }

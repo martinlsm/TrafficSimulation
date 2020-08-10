@@ -4,36 +4,39 @@
 namespace agent {
 
 // should this be global?
-static traffic::TrafficEnvironment environment = traffic::load_environment(1);
+static traffic::TrafficEnvironment* environment = nullptr;
 
 void load_traffic_environment(unsigned int id) {
+	if (environment != nullptr) {
+		delete environment;
+	}
 	environment = traffic::load_environment(id);
 }
 
 size_t destination_count() {
-	return environment.destinations.size();
+	return environment->destination_count();
 }
 
 size_t car_count() {
-	return environment.active_cars.size();
+	return environment->car_count();
 }
 
-void spawn_car(size_t dest_index) {
-	traffic::CarBody car = environment.destinations[dest_index].placeCar();
-	environment.active_cars.push_back(car);
+unsigned long spawn_car(size_t start, size_t goal) {
+	unsigned long car_id = environment->spawn_car(start, goal);
+	return car_id;
 }
 
 py::array_t<float> read_state(size_t car_index) {
-	traffic::CarBody& car = environment.active_cars[car_index];
+	traffic::CarBody* car = environment->getCarBody(car_index);
 
-	Vec2d<float> pos = car.getPos();
-	float speed = car.getSpeed();
+	Vec2d<float> pos = car->getPos();
+	float speed = car->getSpeed();
 
-	float rotation = car.getRotation();
+	float rotation = car->getRotation();
 	float rot_x = std::cos(rotation);
 	float rot_y = std::sin(rotation);
 
-	float steering_angle = car.getSteeringAngle();
+	float steering_angle = car->getSteeringAngle();
 
 	auto result = py::array_t<float>(6);
 	py::buffer_info res_buf = result.request();

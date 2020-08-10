@@ -6,8 +6,7 @@
 namespace traffic {
 
 Destination::Destination(Vec2d<float> position, float direction)
-        : position(position), direction(direction) {}
-
+		: position(position), direction(direction) {}
 
 CarBody Destination::placeCar() {
 	return CarBody{position.x, position.y, direction};
@@ -15,8 +14,67 @@ CarBody Destination::placeCar() {
 
 bool Destination::inside(const Vec2d<float> p, const float margin) const {
 	Vec2d<float> diff = p;
-    diff -= this->position;
-    return diff.abs() <= margin;
+	diff -= this->position;
+	return diff.abs() <= margin;
+}
+
+TrafficEnvironment::TrafficEnvironment(vector<Destination> dests, RoadSystem* road_system)
+		: destinations(dests), road_system(road_system) {}
+
+car_state TrafficEnvironment::getCarState(const unsigned long car_id) const {
+	auto it = active_cars.find(car_id);
+	if (it == active_cars.end()) {
+		return NOT_FOUND;
+	}
+	const Car& car = it->second;
+	return car.state;
+}
+
+CarBody* TrafficEnvironment::getCarBody(unsigned long car_id) {
+	auto it = active_cars.find(car_id);
+	CarBody& body = it->second.body;
+	return &body;
+}
+
+size_t TrafficEnvironment::destination_count() const {
+	return destinations.size();
+}
+
+size_t TrafficEnvironment::car_count() const {
+	return active_cars.size();
+}
+
+unsigned long TrafficEnvironment::spawn_car(size_t start_idx, size_t goal_idx) {
+	car_counter++;
+	Destination* start = &destinations[start_idx];
+	Destination* goal = &destinations[goal_idx];
+	active_cars.insert(std::pair<unsigned int, Car>(car_counter, Car{start->placeCar(), goal, INACTIVE}));
+	return car_counter;
+}
+
+void TrafficEnvironment::update(const float dt) {
+	for (auto it = active_cars.begin(); it != active_cars.end(); ++it) {
+		Car &car = it->second;
+		car.body.update(dt);
+
+		// update car's state
+		if (!road_system->inside(car.body)) {
+			car.state = OFF_ROAD;
+		} else if ((car.goal)->inside(car.body.getPos(), GOAL_MARGIN)) {
+			car.state = REACHED_GOAL;
+		} else {
+			car.state = ON_ROAD;
+		}
+	}
+}
+
+void TrafficEnvironment::clearFinishedCars() {
+	for (auto it = active_cars.begin(); it != active_cars.end(); ++it) {
+		Car &car = it->second;
+		if (car.state == OFF_ROAD || car.state == REACHED_GOAL) {
+			active_cars.erase(it);
+		}
+	}
 }
 
 /*
@@ -66,7 +124,7 @@ void load_world_1(vector<RoadPiece*> &v, vector<Destination> &dests) {
 	dests.push_back({L, 3.0f * M_PI / 2.0f});
 }
 
-TrafficEnvironment load_environment(unsigned int id) {
+TrafficEnvironment* load_environment(unsigned int id) {
 	vector<RoadPiece*> v;
 	vector<Destination> dests;
 	switch (id) {
@@ -78,7 +136,10 @@ TrafficEnvironment load_environment(unsigned int id) {
 	if (v.empty()) {
 		throw std::invalid_argument("invalid world id");
 	}
-	return {RoadSystem{v}, dests, {}};
+
+	RoadSystem* road_system = new RoadSystem(v);
+	TrafficEnvironment* env = new TrafficEnvironment{dests, road_system};
+	return env;
 }
 
 } // namespace traffic

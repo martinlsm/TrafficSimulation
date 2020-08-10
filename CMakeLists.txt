@@ -6,6 +6,9 @@ cmake_minimum_required(VERSION 3.5)
 # Set the project name
 project (traffic_sim)
 
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g -fsanitize=address,undefined")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
+
 set(MAIN_FILE src/main.cpp)
 
 # Create a sources variable with a link to all cpp files to compile
