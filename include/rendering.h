@@ -45,7 +45,6 @@ public:
 class CarSprite {
 private:
 	CarMechanics* car_body;
-	sf::Texture texture;
 	sf::Sprite sprite;
 	
 	sf::Transform getTransform();

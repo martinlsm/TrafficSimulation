@@ -44,12 +44,18 @@ size_t TrafficEnvironment::car_count() const {
 	return active_cars.size();
 }
 
-unsigned long TrafficEnvironment::spawn_car(size_t start_idx, size_t goal_idx) {
+unsigned long TrafficEnvironment::spawnCar(size_t start_idx, size_t goal_idx) {
 	car_counter++;
 	Destination* start = &destinations[start_idx];
 	Destination* goal = &destinations[goal_idx];
 	active_cars.insert(std::pair<unsigned int, Car>(car_counter, Car{start->placeCar(), goal, INACTIVE}));
 	return car_counter;
+}
+
+void TrafficEnvironment::doAction(unsigned long car_id, car_action action) {
+	auto it = active_cars.find(car_id);
+	CarMechanics* car = &it->second.body;
+	do_action(car, action);
 }
 
 void TrafficEnvironment::update(const float dt) {
@@ -69,10 +75,13 @@ void TrafficEnvironment::update(const float dt) {
 }
 
 void TrafficEnvironment::clearFinishedCars() {
-	for (auto it = active_cars.begin(); it != active_cars.end(); ++it) {
+	auto it = active_cars.begin();
+	while (it != active_cars.end()) {
 		Car &car = it->second;
 		if (car.state == OFF_ROAD || car.state == REACHED_GOAL) {
-			active_cars.erase(it);
+			it = active_cars.erase(it);
+		} else {
+			++it;
 		}
 	}
 }

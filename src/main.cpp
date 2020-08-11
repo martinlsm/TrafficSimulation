@@ -9,14 +9,16 @@
 #include "road_system.h"
 #include "rendering.h"
 #include "traffic_env.h"
+#include "texture_manager.h"
 
 using namespace traffic;
 
 int main() {
+	texture_manager::load_textures();
 	TrafficEnvironment* environment = load_environment(1);
 	WorldRenderer world_renderer {environment->road_system->road_pieces};
 
-	unsigned long car_id = environment->spawn_car(0, 4);
+	unsigned long car_id = environment->spawnCar(0, 4);
 	CarMechanics* car = environment->getCarMechanics(car_id);
 	CarSprite car_sprite{car};
 
@@ -35,13 +37,13 @@ int main() {
 			}
 
 			if (event.key.code == sf::Keyboard::W) {
-				do_action(car, GAS_MEDIUM);
+				environment->doAction(car_id, GAS_MEDIUM);
 			} else if (event.key.code == sf::Keyboard::S) {
-				do_action(car, BRAKE_MEDIUM);
+				environment->doAction(car_id, BRAKE_MEDIUM);
 			} else if (event.key.code == sf::Keyboard::A) {
-				do_action(car, TURN_LEFT_HARD);
+				environment->doAction(car_id, TURN_LEFT_HARD);
 			} else if (event.key.code == sf::Keyboard::D) {
-				do_action(car, TURN_RIGHT_HARD);
+				environment->doAction(car_id, TURN_RIGHT_HARD);
 			}
 		}
 
@@ -50,7 +52,16 @@ int main() {
 		float dt_sec = dt.asSeconds();
 		environment->update(dt_sec);
 
-		std::cout << (int)environment->getCarState(car_id) << std::endl;
+		environment->clearFinishedCars();
+		car_state state = environment->getCarState(car_id);
+
+		std::cout << (int)state << std::endl;
+
+		if (state == NOT_FOUND) {
+			car_id = environment->spawnCar(0, 7);
+			car = environment->getCarMechanics(car_id);
+			car_sprite = CarSprite{car};
+		}
 
 		// render screen
         window.clear({0x43,0x8a, 0x5e});
@@ -61,6 +72,7 @@ int main() {
 
 	delete environment->road_system;
 	delete environment;
+	texture_manager::delete_textures();
 
     return 0;
 }

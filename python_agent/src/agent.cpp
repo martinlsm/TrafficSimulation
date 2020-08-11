@@ -22,8 +22,16 @@ size_t car_count() {
 }
 
 unsigned long spawn_car(size_t start, size_t goal) {
-	unsigned long car_id = environment->spawn_car(start, goal);
+	unsigned long car_id = environment->spawnCar(start, goal);
 	return car_id;
+}
+
+traffic::car_action index_to_action(size_t idx) {
+	return (1L << idx);
+}
+
+void do_action(unsigned long car_index, traffic::car_action action) {
+	environment->doAction(car_index, action);
 }
 
 py::array_t<float> read_state(size_t car_index) {

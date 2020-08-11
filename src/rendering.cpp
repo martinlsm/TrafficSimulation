@@ -1,4 +1,5 @@
 #include "rendering.h"
+#include "texture_manager.h"
 
 StraightRoadSprite::StraightRoadSprite(StraightRoad* road)
 		: RoadPieceSprite(),
@@ -76,15 +77,7 @@ sf::Transform CarSprite::getTransform() {
 
 CarSprite::CarSprite(CarMechanics *car_body) {
 	this->car_body = car_body;
-
-	// load car image asset
-	std::string asset_path = "../assets/car.png";
-	if (!texture.loadFromFile(asset_path)) {
-		std::cerr << asset_path << std::endl;
-		exit(1);
-	}
-
-	sprite.setTexture(texture);
+	sprite.setTexture(*texture_manager::car_texture);
 }
 
 void CarSprite::draw(sf::RenderWindow &window) {

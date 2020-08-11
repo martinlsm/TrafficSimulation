@@ -5,6 +5,7 @@
 
 #include "road_system.h"
 #include "constants.h"
+#include "car_actions.h"
 
 namespace traffic {
 
@@ -49,7 +50,8 @@ public:
 	size_t car_count() const;
 
 	// Spawns a car and returns its assigned id
-	unsigned long spawn_car(size_t start_idx, size_t goal_idx);
+	unsigned long spawnCar(size_t start_idx, size_t goal_idx);
+	void doAction(unsigned long car_id, car_action action);
 	void update(const float dt);
 	void clearFinishedCars();
 };

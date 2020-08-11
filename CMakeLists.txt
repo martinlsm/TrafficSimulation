@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.5)
 # Set the project name
 project (traffic_sim)
 
-SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g -fsanitize=address,undefined")
+SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g")
+# SET(GCC_COVERAGE_COMPILE_FLAGS "${GCC_COVERAGE_COMPILE_FLAGS} -fsanitize=address,undefined")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 
 set(MAIN_FILE src/main.cpp)
@@ -18,6 +19,7 @@ set(SOURCES
 	src/road_system.cpp
 	src/rendering.cpp
 	src/traffic_env.cpp
+	src/texture_manager.cpp
 )
 
 add_library(traffic_framework SHARED ${SOURCES})
