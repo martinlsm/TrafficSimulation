@@ -8,11 +8,6 @@ using geometry::PolarVec2d;
 
 namespace traffic {
 
-static const float CAR_HEIGHT = 32.0f;
-static const float CAR_WIDTH = 16.0f;
-static const float MAX_STEERING_ANGLE = 0.08f * (2.0f*M_PI);
-static const float MAX_SPEED = 30.0f;
-
 class CarMechanics {
 private:
 	Vec2d<float> position;
