@@ -21,6 +21,13 @@ bool Destination::inside(const Vec2d<float> p, const float margin) const {
 TrafficEnvironment::TrafficEnvironment(vector<Destination> dests, RoadSystem* road_system)
 		: destinations(dests), road_system(road_system) {}
 
+
+const car_state NOT_FOUND    = 0; // is not in the traffic environment
+const car_state INACTIVE     = 1; // just spawned and has not received any state
+const car_state ON_ROAD      = 2;
+const car_state OFF_ROAD     = 3;
+const car_state REACHED_GOAL = 4;
+
 car_state TrafficEnvironment::getCarState(const unsigned long car_id) const {
 	auto it = active_cars.find(car_id);
 	if (it == active_cars.end()) {
