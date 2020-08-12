@@ -7,7 +7,7 @@
 
 namespace py = pybind11;
 
-namespace agent {
+namespace env_api {
 
 void load_traffic_environment(unsigned int id);
 size_t destination_count();
@@ -20,4 +20,4 @@ py::array_t<float> read_state(unsigned long car_id);
 int get_reward(unsigned long car_id);
 bool in_terminal_state(unsigned long car_id);
 
-} // namespace agent
+} // namespace env_api

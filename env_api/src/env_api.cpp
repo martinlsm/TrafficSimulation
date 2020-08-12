@@ -1,8 +1,8 @@
-#include "agent.h"
+#include "env_api.h"
 #include "constants.h"
 #include <cmath>
 
-namespace agent {
+namespace env_api {
 
 // should this be global?
 static traffic::TrafficEnvironment* environment = nullptr;
@@ -88,4 +88,4 @@ bool in_terminal_state(unsigned long car_id) {
 			|| state == traffic::REACHED_GOAL;
 }
 
-} // namespace agent
+} // namespace env_api

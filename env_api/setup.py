@@ -19,11 +19,11 @@ class get_pybind_include(object):
 
 ext_modules = [
     Extension(
-        'python_agent',
+        'env_api',
         # Sort input source files to ensure bit-for-bit reproducible builds
         # (https://github.com/pybind/python_example/pull/53)
         sorted(['src/main.cpp',
-                'src/agent.cpp',
+                'src/env_api.cpp',
                 'src/cpp_src/car.cpp',
                 'src/cpp_src/car_actions.cpp',
                 'src/cpp_src/traffic_env.cpp',
@@ -109,11 +109,11 @@ class BuildExt(build_ext):
 
 
 setup(
-    name='python_agent',
+    name='env_api',
     version=__version__,
     author='Martin Lindström',
     author_email='martin.lindstrom94@gmail.com',
-    description='Trainable agent for the traffic environment',
+    description='API for the C++-based traffic environment',
     long_description='',
     ext_modules=ext_modules,
     setup_requires=['pybind11>=2.5.0'],
