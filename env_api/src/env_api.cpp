@@ -22,6 +22,14 @@ size_t car_count() {
 	return environment->carCount();
 }
 
+size_t state_dim_size() {
+	return 8;
+}
+
+size_t action_dim_size() {
+	return 12;
+}
+
 unsigned long spawn_car(size_t start, size_t goal) {
 	unsigned long car_id = environment->spawnCar(start, goal);
 	return car_id;
@@ -55,7 +63,7 @@ py::array_t<float> read_state(size_t car_id) {
 	Vec2d<float> destination_pos = environment->getCarDestination(car_id);
 	Vec2d<float> vec_to_dest = destination_pos - car_pos;
 
-	auto result = py::array_t<float>(8);
+	auto result = py::array_t<float>(state_dim_size());
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
@@ -71,7 +79,7 @@ py::array_t<float> read_state(size_t car_id) {
 	return result;
 }
 
-int get_reward(size_t car_id) {
+int get_reward_simple(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);
 	if (state == traffic::OFF_ROAD) {
 		return -1;
@@ -81,6 +89,23 @@ int get_reward(size_t car_id) {
 		return 0;
 	}
 }
+
+const int max_dist = std::hypot(WORLD_WIDTH, WORLD_HEIGHT);
+int get_reward_advanced(unsigned long car_id) {
+	traffic::car_state state = environment->getCarState(car_id);
+	if (state == traffic::REACHED_GOAL) {
+		return 10000;
+	} else if (state == traffic::OFF_ROAD) {
+		return -10000;
+	}
+	traffic::CarMechanics* car = environment->getCarMechanics(car_id);
+	Vec2d<float> car_pos = car->getPos();
+	Vec2d<float> dest = environment->getCarDestination(car_id);
+	Vec2d<float> to_dest = dest - car_pos;
+	int score = max_dist - to_dest.abs();
+	return score;
+}
+
 
 bool in_terminal_state(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);

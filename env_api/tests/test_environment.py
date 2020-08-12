@@ -18,5 +18,12 @@ class TestStringMethods(unittest.TestCase):
         reward = env.get_reward(car_id)
         self.assertEqual(reward, 0)
 
+    def test_dim_size(self):
+        env.load_traffic_environment(1)
+        state_dim = env.state_dim_size()
+        action_dim = env.action_dim_size()
+        self.assertEqual(state_dim, 8)
+        self.assertEqual(action_dim, 12)
+
 if __name__ == '__main__':
     unittest.main()
