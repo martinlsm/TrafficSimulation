@@ -14,7 +14,7 @@ class TestStringMethods(unittest.TestCase):
         car_id = pa.spawn_car(0, 7)
         self.assertEqual(car_id, 1)
         state = pa.read_state(car_id)
-        self.assertEqual(len(state), 6)
+        self.assertEqual(len(state), 8)
         reward = pa.get_reward(car_id)
         self.assertEqual(reward, 0)
 

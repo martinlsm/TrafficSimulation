@@ -1,4 +1,5 @@
 #include "agent.h"
+#include "constants.h"
 #include <cmath>
 
 namespace agent {
@@ -14,11 +15,11 @@ void load_traffic_environment(unsigned int id) {
 }
 
 size_t destination_count() {
-	return environment->destination_count();
+	return environment->destinationCount();
 }
 
 size_t car_count() {
-	return environment->car_count();
+	return environment->carCount();
 }
 
 unsigned long spawn_car(size_t start, size_t goal) {
@@ -30,14 +31,19 @@ traffic::car_action index_to_action(size_t idx) {
 	return (1L << idx);
 }
 
-void do_action(unsigned long car_index, traffic::car_action action) {
-	environment->doAction(car_index, action);
+void do_action(unsigned long car_id, traffic::car_action action) {
+	environment->doAction(car_id, action);
 }
 
-py::array_t<float> read_state(size_t car_index) {
-	traffic::CarMechanics* car = environment->getCarMechanics(car_index);
+void update() {
+	float dt = 1.0f / (float)FRAME_RATE;
+	environment->update(dt);
+}
 
-	Vec2d<float> pos = car->getPos();
+py::array_t<float> read_state(size_t car_id) {
+	traffic::CarMechanics* car = environment->getCarMechanics(car_id);
+
+	Vec2d<float> car_pos = car->getPos();
 	float speed = car->getSpeed();
 
 	float rotation = car->getRotation();
@@ -46,29 +52,40 @@ py::array_t<float> read_state(size_t car_index) {
 
 	float steering_angle = car->getSteeringAngle();
 
-	auto result = py::array_t<float>(6);
+	Vec2d<float> destination_pos = environment->getCarDestination(car_id);
+	Vec2d<float> vec_to_dest = destination_pos - car_pos;
+
+	auto result = py::array_t<float>(8);
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
-	res_data[0] = pos.x;
-	res_data[1] = pos.y;
+	res_data[0] = car_pos.x;
+	res_data[1] = car_pos.y;
 	res_data[2] = speed;
 	res_data[3] = rot_x;
 	res_data[4] = rot_y;
 	res_data[5] = steering_angle;
+	res_data[6] = vec_to_dest.x;
+	res_data[7] = vec_to_dest.y;
 	
 	return result;
 }
 
-int get_reward(size_t car_index) {
-	traffic::car_state state = environment->getCarState(car_index);
-	switch (state) {
-		case traffic::OFF_ROAD:
-			return -1;
-		case traffic::REACHED_GOAL:
-			return 1;
+int get_reward(size_t car_id) {
+	traffic::car_state state = environment->getCarState(car_id);
+	if (state == traffic::OFF_ROAD) {
+		return -1;
+	} else if (state == traffic::REACHED_GOAL) {
+		return 1;
+	} else {
+		return 0;
 	}
-	return 0;
+}
+
+bool in_terminal_state(unsigned long car_id) {
+	traffic::car_state state = environment->getCarState(car_id);
+	return state == traffic::OFF_ROAD || state == traffic::NOT_FOUND
+			|| state == traffic::REACHED_GOAL;
 }
 
 } // namespace agent

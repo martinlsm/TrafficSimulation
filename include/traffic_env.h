@@ -46,8 +46,9 @@ public:
 
 	car_state getCarState(const unsigned long car_id) const;
 	CarMechanics* getCarMechanics(unsigned long car_id);
-	size_t destination_count() const;
-	size_t car_count() const;
+	size_t destinationCount() const;
+	Vec2d<float> getCarDestination(unsigned long car_id) const;
+	size_t carCount() const;
 
 	// Spawns a car and returns its assigned id
 	unsigned long spawnCar(size_t start_idx, size_t goal_idx);

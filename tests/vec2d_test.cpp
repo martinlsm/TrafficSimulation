@@ -24,6 +24,29 @@ TEST(TestVec2d, Abs) {
 	EXPECT_EQ(10.0, vd.abs());
 }
 
+TEST(TestVec2d, Plus) {
+	float a = -23.43f;
+	float b = 10.0f;
+	float c = -100.2f;
+	float d = 12.353f;
+	Vec2d<float> v1{a, b};
+	Vec2d<float> v2{c, d};
+	Vec2d<float> v3 = v1 + v2;
+	EXPECT_EQ(a + c, v3.x);
+	EXPECT_EQ(b + d, v3.y);
+}
+TEST(TestVec2d, Minus) {
+	float a = -23.43f;
+	float b = 10.0f;
+	float c = -100.2f;
+	float d = 12.353f;
+	Vec2d<float> v1{a, b};
+	Vec2d<float> v2{c, d};
+	Vec2d<float> v3 = v1 - v2;
+	EXPECT_EQ(a - c, v3.x);
+	EXPECT_EQ(b - d, v3.y);
+}
+
 TEST(TestVec2d, Normalize) {
 	float a = 12.34f;
 	float b = -43.21f;

@@ -22,6 +22,9 @@ struct Vec2d {
 	friend Vec2d<U> operator+(const Vec2d<U> &v1, const Vec2d<U> &v2);
 
 	template<class U>
+	friend Vec2d<U> operator-(const Vec2d<U> &v1, const Vec2d<U> &v2);
+
+	template<class U>
 	friend Vec2d<U> operator*(const U lhs, const Vec2d<U> &rhs);
 
 	template<class U>
@@ -76,6 +79,11 @@ void Vec2d<T>::operator-=(const Vec2d<T> &rhs) {
 template <class T>
 Vec2d<T> operator+(const Vec2d<T> &v1, const Vec2d<T> &v2) {
 	return Vec2d<T>(v1.x + v2.x, v1.y + v2.y);
+}
+
+template <class T>
+Vec2d<T> operator-(const Vec2d<T> &v1, const Vec2d<T> &v2) {
+	return Vec2d<T>(v1.x - v2.x, v1.y - v2.y);
 }
 
 template <class T>

@@ -43,12 +43,18 @@ CarMechanics* TrafficEnvironment::getCarMechanics(unsigned long car_id) {
 	return &body;
 }
 
-size_t TrafficEnvironment::destination_count() const {
+size_t TrafficEnvironment::destinationCount() const {
 	return destinations.size();
 }
 
-size_t TrafficEnvironment::car_count() const {
+size_t TrafficEnvironment::carCount() const {
 	return active_cars.size();
+}
+
+Vec2d<float> TrafficEnvironment::getCarDestination(unsigned long car_id) const {
+	auto it = active_cars.find(car_id);
+	const Car* car = &it->second;
+	return car->goal->position;
 }
 
 unsigned long TrafficEnvironment::spawnCar(size_t start_idx, size_t goal_idx) {
