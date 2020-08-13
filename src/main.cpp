@@ -35,16 +35,20 @@ int main() {
 					|| event.key.code == sf::Keyboard::Q) {
 				window.close();
 			}
-
+			
+			car_action action;
 			if (event.key.code == sf::Keyboard::W) {
-				environment->doAction(car_id, GAS_MEDIUM);
+				action = GAS_MEDIUM;
 			} else if (event.key.code == sf::Keyboard::S) {
-				environment->doAction(car_id, BRAKE_MEDIUM);
+				action = BRAKE_MEDIUM;
 			} else if (event.key.code == sf::Keyboard::A) {
-				environment->doAction(car_id, TURN_LEFT_HARD);
+				action = TURN_LEFT_HARD;
 			} else if (event.key.code == sf::Keyboard::D) {
-				environment->doAction(car_id, TURN_RIGHT_HARD);
+				action = TURN_RIGHT_HARD;
+			} else {
+				action = DO_NOTHING;
 			}
+			environment->doAction(car_id, action);
 		}
 
 		// update state

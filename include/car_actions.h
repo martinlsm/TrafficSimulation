@@ -6,6 +6,7 @@
 namespace traffic {
 
 typedef std::int64_t car_action;
+extern const car_action DO_NOTHING;
 extern const car_action BRAKE_LIGHT;
 extern const car_action BRAKE_MEDIUM;
 extern const car_action BRAKE_HARD;

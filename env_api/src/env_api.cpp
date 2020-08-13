@@ -27,7 +27,7 @@ size_t state_dim_size() {
 }
 
 size_t action_dim_size() {
-	return 12;
+	return 13;
 }
 
 unsigned long spawn_car(size_t start, size_t goal) {
