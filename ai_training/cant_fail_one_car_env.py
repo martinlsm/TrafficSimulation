@@ -5,18 +5,23 @@ import random
 TRAFFIC_ENV_ID = 1
 env.load_traffic_environment(TRAFFIC_ENV_ID)
 
-def car_count():
-    return 1
-
 def state_dim_size():
     return env.state_dim_size()
 
 def action_dim_size():
-    return env.action_dim_size()
+    return 3
+
+# in this environment, the car can't turn
+def __translate_action(action):
+    if action == 0:
+        return env.car_action_do_nothing()
+    elif action == 1:
+        return env.car_action_gas_medium()
+    elif action == 2:
+        return env.car_action_brake_medium()
 
 def reset():
     global car_id
-    # car_id = env.spawn_car(*random.sample(range(8), 2))
     car_id = env.spawn_car(0, 6)
     observation = env.read_state(car_id)
     reward = env.get_reward_simple(car_id)
@@ -24,7 +29,7 @@ def reset():
     return observation, reward, done
 
 def step(action):
-    action = env.index_to_action(action)
+    action = __translate_action(action)
     env.do_action(car_id, action)
     env.update()
 
