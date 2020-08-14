@@ -22,5 +22,8 @@ py::array_t<float> read_state(unsigned long car_id);
 int get_reward_simple(unsigned long car_id);
 int get_reward_advanced(unsigned long car_id);
 bool in_terminal_state(unsigned long car_id);
+std::tuple<float, float> get_car_position(unsigned long car_id);
+std::tuple<float, float> get_car_size(unsigned long car_id);
+float get_car_rotation(unsigned long car_id);
 
 } // namespace env_api

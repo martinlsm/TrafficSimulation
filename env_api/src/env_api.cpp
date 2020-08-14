@@ -106,11 +106,24 @@ int get_reward_advanced(unsigned long car_id) {
 	return score;
 }
 
-
 bool in_terminal_state(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);
 	return state == traffic::OFF_ROAD || state == traffic::NOT_FOUND
 			|| state == traffic::REACHED_GOAL;
+}
+
+std::tuple<float, float> get_car_position(unsigned long car_id) {
+	Vec2d<float> pos = environment->getCarMechanics(car_id)->getPos();
+	return std::make_tuple(pos.x, pos.y);
+}
+
+std::tuple<float, float> get_car_size(unsigned long car_id) {
+	Vec2d<float> size = environment->getCarMechanics(car_id)->getSize();
+	return std::make_tuple(size.x, size.y);
+}
+
+float get_car_rotation(unsigned long car_id) {
+	return environment->getCarMechanics(car_id)->getRotation();
 }
 
 } // namespace env_api

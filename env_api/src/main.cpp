@@ -19,6 +19,9 @@ PYBIND11_MODULE(env_api, m) {
 	m.def("get_reward_simple", &env_api::get_reward_simple);
 	m.def("get_reward_advanced", &env_api::get_reward_advanced);
 	m.def("in_terminal_state", &env_api::in_terminal_state);
+	m.def("get_car_position", &env_api::get_car_position);
+	m.def("get_car_size", &env_api::get_car_size);
+	m.def("get_car_rotation", &env_api::get_car_rotation);
 
 	m.attr("car_action_do_nothing")        = traffic::DO_NOTHING;
 	m.attr("car_action_brake_light")       = traffic::BRAKE_LIGHT;
@@ -33,6 +36,7 @@ PYBIND11_MODULE(env_api, m) {
 	m.attr("car_action_turn_right_light")  = traffic::TURN_RIGHT_LIGHT;
 	m.attr("car_action_turn_right_medium") = traffic::TURN_RIGHT_MEDIUM;
 	m.attr("car_action_turn_right_hard")   = traffic::TURN_RIGHT_HARD;
+
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
