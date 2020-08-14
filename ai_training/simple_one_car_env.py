@@ -14,15 +14,15 @@ def action_dim_size():
 # this environment reduces the amount of possible actions to 5
 def __translate_action(action):
     if action == 0:
-        return env.car_action_do_nothing()
+        return env.car_action_do_nothing
     elif action == 1:
-        return env.car_action_gas_medium()
+        return env.car_action_gas_medium
     elif action == 2:
-        return env.car_action_brake_medium()
+        return env.car_action_brake_medium
     elif action == 3:
-        return env.car_action_turn_left_hard()
+        return env.car_action_turn_left_hard
     elif action == 4:
-        return env.car_action_turn_right_hard()
+        return env.car_action_turn_right_hard
 
 def reset():
     global car_id

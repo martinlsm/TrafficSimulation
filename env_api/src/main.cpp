@@ -20,19 +20,19 @@ PYBIND11_MODULE(env_api, m) {
 	m.def("get_reward_advanced", &env_api::get_reward_advanced);
 	m.def("in_terminal_state", &env_api::in_terminal_state);
 
-	m.def("car_action_do_nothing", [](){ return traffic::DO_NOTHING; });
-	m.def("car_action_brake_light", [](){ return traffic::BRAKE_LIGHT; });
-	m.def("car_action_brake_medium", [](){ return traffic::BRAKE_MEDIUM; });
-	m.def("car_action_brake_hard", [](){ return traffic::BRAKE_HARD; });
-	m.def("car_action_gas_light", [](){ return traffic::GAS_LIGHT; });
-	m.def("car_action_gas_medium", [](){ return traffic::GAS_MEDIUM; });
-	m.def("car_action_gas_hard", [](){ return traffic::GAS_HARD; });
-	m.def("car_action_turn_left_light", [](){ return traffic::TURN_LEFT_LIGHT; });
-	m.def("car_action_turn_left_medium", [](){ return traffic::TURN_LEFT_MEDIUM; });
-	m.def("car_action_turn_left_hard", [](){ return traffic::TURN_LEFT_HARD; });
-	m.def("car_action_turn_right_light", [](){ return traffic::TURN_RIGHT_LIGHT; });
-	m.def("car_action_turn_right_medium", [](){ return traffic::TURN_RIGHT_MEDIUM; });
-	m.def("car_action_turn_right_hard", [](){ return traffic::TURN_RIGHT_HARD; });
+	m.attr("car_action_do_nothing")        = traffic::DO_NOTHING;
+	m.attr("car_action_brake_light")       = traffic::BRAKE_LIGHT;
+	m.attr("car_action_brake_medium")      = traffic::BRAKE_MEDIUM;
+	m.attr("car_action_brake_hard")        = traffic::BRAKE_HARD;
+	m.attr("car_action_gas_light")         = traffic::GAS_LIGHT;
+	m.attr("car_action_gas_medium")        = traffic::GAS_MEDIUM;
+	m.attr("car_action_gas_hard")          = traffic::GAS_HARD;
+	m.attr("car_action_turn_left_light")   = traffic::TURN_LEFT_LIGHT;
+	m.attr("car_action_turn_left_medium")  = traffic::TURN_LEFT_MEDIUM;
+	m.attr("car_action_turn_left_hard")    = traffic::TURN_LEFT_HARD;
+	m.attr("car_action_turn_right_light")  = traffic::TURN_RIGHT_LIGHT;
+	m.attr("car_action_turn_right_medium") = traffic::TURN_RIGHT_MEDIUM;
+	m.attr("car_action_turn_right_hard")   = traffic::TURN_RIGHT_HARD;
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
