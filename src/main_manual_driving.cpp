@@ -3,10 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "car.h"
-#include "car_actions.h"
-#include "constants.h"
-#include "road_system.h"
 #include "rendering.h"
 #include "traffic_env.h"
 #include "texture_manager.h"

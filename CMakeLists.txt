@@ -10,8 +10,6 @@ SET(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g")
 # SET(GCC_COVERAGE_COMPILE_FLAGS "${GCC_COVERAGE_COMPILE_FLAGS} -fsanitize=address,undefined")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 
-set(MAIN_FILE src/main.cpp)
-
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
 	src/car.cpp
@@ -27,8 +25,11 @@ target_include_directories(traffic_framework PUBLIC ${PROJECT_SOURCE_DIR}/includ
 target_link_libraries(traffic_framework -lsfml-graphics -lsfml-window -lsfml-system)
 
 # Add an executable with the above sources
-add_executable(traffic_sim ${MAIN_FILE} ${SOURCES})
-target_link_libraries(traffic_sim traffic_framework)
+add_executable(export_env_images src/main_export_env_images.cpp ${SOURCES})
+target_link_libraries(export_env_images traffic_framework)
+
+add_executable(manual_driving src/main_manual_driving.cpp ${SOURCES})
+target_link_libraries(manual_driving traffic_framework)
 
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)

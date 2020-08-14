@@ -1,5 +1,6 @@
 build/
 venv/
+env_images/
 .swp
 *.pyc
 **/__pycache__/
