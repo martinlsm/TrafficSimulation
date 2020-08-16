@@ -127,7 +127,7 @@ std::tuple<float, float> get_car_size(unsigned long car_id) {
 }
 
 float get_car_rotation_degrees(unsigned long car_id) {
-	float rotation_rad environment->getCarMechanics(car_id)->getRotation();
+	float rotation_rad = environment->getCarMechanics(car_id)->getRotation();
 	return 180.0f / M_PI * rotation_rad;
 }
 
