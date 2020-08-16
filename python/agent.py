@@ -1,9 +1,10 @@
+import pickle
+
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 
-#import one_car_env as env
-import cant_fail_one_car_env as env
+import one_car_env as env
 
 def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense):
     model = keras.Sequential([
@@ -15,7 +16,7 @@ def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense):
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
                   loss='mean_squared_error')
     return model
-             
+
 class ReplayBuffer():
     def __init__(self, memory_size, state_dim):
         self.memory_size = memory_size
@@ -47,7 +48,7 @@ class ReplayBuffer():
 
         return from_states, to_states, actions, rewards, terminals
 
-class Agent():
+class CarAgent():
     def __init__(self, learning_rate, gamma, state_dim, action_dim,
                  eps_start, eps_decrement, eps_end, memory_size):
         self.learning_rate = learning_rate
@@ -65,7 +66,7 @@ class Agent():
         if explore and np.random.rand() < self.eps:
             return np.random.choice(self.action_dim)
         else:
-            q_values = self.dqn.predict(observation.reshape(1, env.get_state_dim()))
+            q_values = self.dqn.predict(observation.reshape(1, env.state_dim_size()))
             return np.argmax(q_values)
 
     def store_transition(self, from_state, to_state, action, reward, done):
@@ -93,31 +94,3 @@ class Agent():
                 if self.eps > self.eps_end else self.eps_end
 
         return loss, self.eps
-
-
-if __name__ == '__main__':
-    agent = Agent(0.001, 0.95, env.state_dim_size(), env.action_dim_size(), 1.0, 0.0001, 0.01, 50000)
-
-    training_rounds = 1000
-    batch_size = 64
-    state_counter = 0
-    loss_history = np.zeros(1000000)
-
-    for i in range(training_rounds):
-        print(f'Training round #{i+1}')
-        observation, reward, done = env.reset()
-        assert reward == 0
-        assert done == False
-        while not done:
-            action = agent.do_action(observation, True)
-            next_observation, reward, done = env.step(action)
-            agent.store_transition(observation, next_observation, action, reward, done)
-            observation = next_observation
-            loss, epsilon = agent.learn(batch_size)
-            loss_history[state_counter] = loss
-            state_counter += 1
-
-        print(f'  Reward: {reward}')
-        print(f'  States: {state_counter}')
-        print(f'  Epsilon: {epsilon}')
-        state_counter = 0

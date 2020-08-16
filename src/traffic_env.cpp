@@ -99,6 +99,10 @@ void TrafficEnvironment::clearFinishedCars() {
 	}
 }
 
+void TrafficEnvironment::removeCar(unsigned long car_id) {
+	active_cars.erase(car_id);
+}
+
 /*
  *    A  B
  *    |  |
@@ -162,6 +166,14 @@ TrafficEnvironment* load_environment(unsigned int id) {
 	RoadSystem* road_system = new RoadSystem(v);
 	TrafficEnvironment* env = new TrafficEnvironment{dests, road_system};
 	return env;
+}
+
+std::vector<unsigned long> TrafficEnvironment::get_car_ids() {
+	std::vector<unsigned long> car_ids;
+	for (auto it = active_cars.begin(); it != active_cars.end(); ++it) {
+		car_ids.push_back(it->first);
+	}
+	return car_ids;
 }
 
 } // namespace traffic

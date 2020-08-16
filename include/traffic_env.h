@@ -49,6 +49,8 @@ public:
 	size_t destinationCount() const;
 	Vec2d<float> getCarDestination(unsigned long car_id) const;
 	size_t carCount() const;
+	std::vector<unsigned long> get_car_ids();
+	void removeCar(unsigned long car_id);
 
 	// Spawns a car and returns its assigned id
 	unsigned long spawnCar(size_t start_idx, size_t goal_idx);

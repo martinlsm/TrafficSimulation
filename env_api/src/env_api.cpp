@@ -35,6 +35,10 @@ unsigned long spawn_car(size_t start, size_t goal) {
 	return car_id;
 }
 
+void remove_car(unsigned long car_id) {
+	environment->removeCar(car_id);
+}
+
 traffic::car_action index_to_action(size_t idx) {
 	return (1L << idx);
 }
@@ -122,8 +126,18 @@ std::tuple<float, float> get_car_size(unsigned long car_id) {
 	return std::make_tuple(size.x, size.y);
 }
 
-float get_car_rotation(unsigned long car_id) {
-	return environment->getCarMechanics(car_id)->getRotation();
+float get_car_rotation_degrees(unsigned long car_id) {
+	float rotation_rad environment->getCarMechanics(car_id)->getRotation();
+	return 180.0f / M_PI * rotation_rad;
+}
+
+py::list get_car_ids() {
+	py::list l;
+	std::vector<unsigned long> v = environment->get_car_ids();
+	for (unsigned long car_id : v) {
+		l.append(car_id);
+	}
+	return l;
 }
 
 } // namespace env_api
