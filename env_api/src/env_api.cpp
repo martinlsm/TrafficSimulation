@@ -97,16 +97,20 @@ int get_reward_simple(unsigned long car_id) {
 const int max_dist = std::hypot(WORLD_WIDTH, WORLD_HEIGHT);
 int get_reward_advanced(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);
-	if (state == traffic::REACHED_GOAL) {
-		return 10000;
+	int score;
+	if (state == traffic::ON_ROAD_STANDING_STILL) {
+		score = -10;
+	} else if (state == traffic::REACHED_GOAL) {
+		score = max_dist;
 	} else if (state == traffic::OFF_ROAD) {
-		return -10000;
+		traffic::CarMechanics* car = environment->getCarMechanics(car_id);
+		Vec2d<float> car_pos = car->getPos();
+		Vec2d<float> dest = environment->getCarDestination(car_id);
+		Vec2d<float> to_dest = dest - car_pos;
+		score = to_dest.abs() - max_dist;
+	} else {
+		score = 0;
 	}
-	traffic::CarMechanics* car = environment->getCarMechanics(car_id);
-	Vec2d<float> car_pos = car->getPos();
-	Vec2d<float> dest = environment->getCarDestination(car_id);
-	Vec2d<float> to_dest = dest - car_pos;
-	int score = max_dist - to_dest.abs();
 	return score;
 }
 

@@ -22,11 +22,12 @@ TrafficEnvironment::TrafficEnvironment(vector<Destination> dests, RoadSystem* ro
 		: destinations(dests), road_system(road_system) {}
 
 
-const car_state NOT_FOUND    = 0; // is not in the traffic environment
-const car_state INACTIVE     = 1; // just spawned and has not received any state
-const car_state ON_ROAD      = 2;
-const car_state OFF_ROAD     = 3;
-const car_state REACHED_GOAL = 4;
+const car_state NOT_FOUND              = 0; // is not in the traffic environment
+const car_state INACTIVE               = 1; // just spawned and has not received any state
+const car_state ON_ROAD                = 2;
+const car_state ON_ROAD_STANDING_STILL = 3;
+const car_state OFF_ROAD               = 4;
+const car_state REACHED_GOAL           = 5;
 
 car_state TrafficEnvironment::getCarState(const unsigned long car_id) const {
 	auto it = active_cars.find(car_id);
@@ -81,6 +82,8 @@ void TrafficEnvironment::update(const float dt) {
 			car.state = OFF_ROAD;
 		} else if ((car.goal)->inside(car.body.getPos(), GOAL_MARGIN)) {
 			car.state = REACHED_GOAL;
+		} else if (std::abs(car.body.getSpeed()) < 0.05f) {
+			car.state = ON_ROAD_STANDING_STILL;
 		} else {
 			car.state = ON_ROAD;
 		}

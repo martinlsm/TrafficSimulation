@@ -8,7 +8,7 @@ car_texture = pygame.image.load('assets/car.png')
 
 def get_car_transform(rotation, size):
     car_transformed = pygame.transform.scale(car_texture, size)
-    car_transformed = pygame.transform.rotate(car_transformed, 180 + rotation)
+    car_transformed = pygame.transform.rotate(car_transformed, 270 - rotation)
     return car_transformed
 
 def render_cars(screen):
@@ -24,6 +24,7 @@ def render_cars(screen):
         screen.blit(car_transform, adjusted_position)
 
 def validation_render_episode(car_agent):
+    print('Validation Round')
     pygame.init()
     clock = pygame.time.Clock()
     pygame.display.set_caption('Agent Training Episode')
@@ -50,10 +51,13 @@ def validation_render_episode(car_agent):
         render_cars(screen)
         pygame.display.update()
 
+    print(f'  Reward: {reward}')
+    print(f'  States: {state_counter}')
+
     pygame.quit()
 
 if __name__ == '__main__':
-    car_agent = agent.CarAgent(0.001, 0.95, env.state_dim_size(), env.action_dim_size(), 1.0, 0.0001, 0.01, 50000)
+    car_agent = agent.CarAgent(0.001, 0.99, env.state_dim_size(), env.action_dim_size(), 1.0, 0.0001, 0.01, 100000)
 
     training_rounds = 1000
     batch_size = 64
@@ -62,8 +66,8 @@ if __name__ == '__main__':
 
     rendering_on = True
 
-    for i in range(training_rounds):
-        print(f'Training round #{i+1}')
+    for i in range(1, training_rounds + 1):
+        print(f'Training round #{i}')
         observation, reward, done = env.reset()
         assert reward == 0
         assert done == False
@@ -81,5 +85,7 @@ if __name__ == '__main__':
         print(f'  Epsilon: {epsilon:.2f}')
         state_counter = 0
 
-        if rendering_on:
+        car_agent.save_dqn_to_file('one_car_env.h5')
+
+        if rendering_on and i % 5 == 0:
             validation_render_episode(car_agent)

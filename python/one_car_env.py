@@ -23,9 +23,9 @@ def reset():
         pass
 
     # car_id = env_api.spawn_car(*random.sample(range(8), 2))
-    car_id = env_api.spawn_car(0, 6)
+    car_id = env_api.spawn_car(0, 7)
     observation = env_api.read_state(car_id)
-    reward = env_api.get_reward_simple(car_id)
+    reward = env_api.get_reward_advanced(car_id)
     done = env_api.in_terminal_state(car_id)
     return observation, reward, done
 
@@ -35,7 +35,7 @@ def step(action):
     env_api.update()
 
     observation = env_api.read_state(car_id)
-    reward = env_api.get_reward_simple(car_id)
+    reward = env_api.get_reward_advanced(car_id)
     done = env_api.in_terminal_state(car_id)
 
     return observation, reward, done

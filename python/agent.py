@@ -1,16 +1,15 @@
-import pickle
-
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 
 import one_car_env as env
 
-def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense):
+def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense, thd_dense):
     model = keras.Sequential([
         keras.layers.Input(state_dim),
         keras.layers.Dense(fst_dense, activation='relu'),
         keras.layers.Dense(snd_dense, activation='relu'),
+        keras.layers.Dense(thd_dense, activation='relu'),
         keras.layers.Dense(action_dim, activation='linear')
     ])
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
@@ -50,7 +49,8 @@ class ReplayBuffer():
 
 class CarAgent():
     def __init__(self, learning_rate, gamma, state_dim, action_dim,
-                 eps_start, eps_decrement, eps_end, memory_size):
+                 eps_start, eps_decrement, eps_end, memory_size,
+                 saved_dqn_file_name=None):
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.state_dim = state_dim
@@ -58,8 +58,11 @@ class CarAgent():
         self.eps = eps_start
         self.eps_decrement = eps_decrement
         self.eps_end = eps_end
-        self.dqn = build_dqn(learning_rate, state_dim, action_dim, 16, 16)
         self.replay_memory = ReplayBuffer(memory_size, state_dim)
+        if saved_dqn_file_name is not None:
+            self.dqn = self.load_dqn_from_file(saved_dqn_file_name)
+        else:
+            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 32, 32, 32)
         self.dqn.summary()
 
     def do_action(self, observation, explore):
@@ -94,3 +97,9 @@ class CarAgent():
                 if self.eps > self.eps_end else self.eps_end
 
         return loss, self.eps
+
+    def save_dqn_to_file(self, file_name):
+        self.dqn.save(file_name)
+
+    def load_dqn_from_file(self, file_name):
+        return keras.models.load_model(file_name)

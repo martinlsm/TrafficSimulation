@@ -24,6 +24,7 @@ typedef std::int8_t car_state;
 extern const car_state NOT_FOUND;
 extern const car_state INACTIVE;
 extern const car_state ON_ROAD;
+extern const car_state ON_ROAD_STANDING_STILL;
 extern const car_state OFF_ROAD;
 extern const car_state REACHED_GOAL;
 
