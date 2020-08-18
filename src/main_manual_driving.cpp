@@ -18,6 +18,13 @@ int main() {
 	CarMechanics* car = environment->getCarMechanics(car_id);
 	CarSprite car_sprite{car};
 
+	vector<float> sensor_angles;
+	for (int i = 0; i < 8; i++) {
+		float f = i * M_PI / 4;
+		sensor_angles.push_back(f);
+	}
+	SensorsRenderer sensors_renderer {environment->road_system, car, sensor_angles};
+
 	sf::Clock clock;
     sf::RenderWindow window(sf::VideoMode(WORLD_WIDTH, WORLD_HEIGHT), "Traffic Simulation");
 	window.setFramerateLimit(FRAME_RATE);
@@ -67,6 +74,7 @@ int main() {
         window.clear({0x43,0x8a, 0x5e});
 		world_renderer.draw(window);
 		car_sprite.draw(window);
+		sensors_renderer.draw(window);
         window.display();
     }
 

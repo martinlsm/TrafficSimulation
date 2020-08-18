@@ -84,3 +84,22 @@ void CarSprite::draw(sf::RenderWindow &window) {
 	sf::Transform transform = this->getTransform();
 	window.draw(sprite, transform);
 }
+
+SensorsRenderer::SensorsRenderer(
+		RoadSystem* road_system, CarMechanics* car, vector<float>& sensor_angles)
+			: road_system(road_system),
+			car(car),
+			sensor_angles(sensor_angles),
+			lines(sf::LinesStrip, sensor_angles.size()) {}
+
+void SensorsRenderer::draw(sf::RenderWindow& window) {
+	vector<float> readings = road_system->sensor_readings(*car, sensor_angles);
+	Vec2d<float> car_pos = car->getPos();
+	for (size_t i = 0; i < sensor_angles.size(); i++) {
+		float actual_angle = car->getRotation() + sensor_angles[i];
+		float endpoint_x = car_pos.x + (readings[i] * std::cos(actual_angle));
+		float endpoint_y = car_pos.y + (readings[i] * std::sin(actual_angle)); 
+		lines[i].position = sf::Vector2f(endpoint_x, endpoint_y);
+	}
+	window.draw(lines);
+}

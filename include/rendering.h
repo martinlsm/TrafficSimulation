@@ -52,3 +52,15 @@ public:
 	CarSprite(CarMechanics *car_body);
 	void draw(sf::RenderWindow &window);
 };
+
+class SensorsRenderer {
+private:
+	RoadSystem* road_system;
+	CarMechanics* car;
+	vector<float>& sensor_angles;
+	sf::VertexArray lines;
+public:
+	SensorsRenderer(RoadSystem* road_system,
+			CarMechanics* car, vector<float>& sensor_angles);
+	void draw(sf::RenderWindow& window);
+};

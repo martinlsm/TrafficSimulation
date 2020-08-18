@@ -59,7 +59,7 @@ def validation_render_episode(car_agent):
 if __name__ == '__main__':
     car_agent = agent.CarAgent(0.001, 0.99, env.state_dim_size(), env.action_dim_size(), 1.0, 0.0001, 0.01, 100000)
 
-    training_rounds = 1000
+    training_rounds = 100000
     batch_size = 64
     state_counter = 0
     loss_history = np.zeros(1000000)
