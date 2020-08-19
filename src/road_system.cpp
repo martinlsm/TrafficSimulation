@@ -112,8 +112,7 @@ vector<float> RoadSystem::sensor_readings(
 
 		float total_reading = 0.0f;
 
-		while ((sensor_endpoint - prev_sensor_endpoint).abs() > 1e-5) { // TODO: make this cheaper
-			std::cout << "  entering loop\n";
+		while ((sensor_endpoint - prev_sensor_endpoint).abs() > 1e-5) {
 
 			prev_sensor_endpoint = sensor_endpoint;
 
@@ -123,9 +122,11 @@ vector<float> RoadSystem::sensor_readings(
 				if (r >= 0) {
 					reading = std::max(reading, r);
 					found_reading = true;
-					total_reading += reading;
-					break;
 				}
+			}
+
+			if (reading > 0) {
+				total_reading += reading;
 			}
 
 			float sensor_x = total_reading * cos_sensor + car_pos.x;
@@ -136,8 +137,6 @@ vector<float> RoadSystem::sensor_readings(
 		if (!found_reading) {
 			total_reading = std::numeric_limits<float>::max();
 		}
-
-		std::cout << (found_reading ? "True" : "False") << "\n";
 
 		readings.push_back(total_reading);
 	}
