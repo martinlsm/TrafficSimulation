@@ -14,33 +14,31 @@ StraightRoad::StraightRoad(const Vec2d<float> a,
 
 StraightRoad::~StraightRoad() {}
 
-bool StraightRoad::inside(const CarMechanics &car) const {
+bool StraightRoad::inside(Vec2d<float> pos) const {
 	float road_rotation = this->getRotation();
-	Vec2d<float> car_pos = car.getPos();
-	car_pos -= a;
-	car_pos.rotate(-road_rotation);
-	return car_pos.x >= 0 && car_pos.x <= length
-			&& car_pos.y >= -(width / 2) && car_pos.y <= width / 2;
+	pos -= a;
+	pos.rotate(-road_rotation);
+	return pos.x >= 0 && pos.x <= length
+			&& pos.y >= -(width / 2) && pos.y <= width / 2;
 }
 
-float StraightRoad::sensor_reading(const CarMechanics &car, float angle) const {
-	if (!inside(car)) {
+float StraightRoad::sensor_reading(Vec2d<float> sensor_origin, float angle) const {
+	if (!inside(sensor_origin)) {
 		return std::numeric_limits<float>::max();
 	}
 	float road_rotation = this->getRotation();
-	float actual_angle = car.getRotation() + angle - road_rotation; // or + road_rotation?
-	float sin_angle = std::sin(actual_angle);
+	float transformed_angle = angle - road_rotation;
+	float sin_angle = std::sin(transformed_angle);
 
-	Vec2d<float> car_pos = car.getPos();
-	car_pos -= a;
-	car_pos.rotate(-road_rotation);
+	sensor_origin -= a;
+	sensor_origin.rotate(-road_rotation);
 
 	float f_eps = 0.001;
 	if (sin_angle > f_eps) {
-		float dist_to_upper_border = width / 2 - car_pos.y;
+		float dist_to_upper_border = width / 2 - sensor_origin.y;
 		return dist_to_upper_border / sin_angle;
 	} else if (sin_angle < -f_eps) {
-		float dist_to_lower_border = width / 2 + car_pos.y;
+		float dist_to_lower_border = width / 2 + sensor_origin.y;
 		return -dist_to_lower_border / sin_angle;
 	} else {
 		return std::numeric_limits<float>::max();
@@ -60,13 +58,12 @@ FilledCircularPiece::FilledCircularPiece(Vec2d<float> position, float radius)
 
 FilledCircularPiece::~FilledCircularPiece() {}
 
-bool FilledCircularPiece::inside(const CarMechanics &car) const {
-	Vec2d<float> car_pos = car.getPos();
-	car_pos -= this->position;
-	return car_pos.abs() <= radius;
+bool FilledCircularPiece::inside(Vec2d<float> pos) const {
+	pos -= this->position;
+	return pos.abs() <= radius;
 }
 
-float FilledCircularPiece::sensor_reading(const CarMechanics &car, float angle) const {
+float FilledCircularPiece::sensor_reading(Vec2d<float> pos, float angle) const {
 	throw "TODO: Function not implemented";
 }
 
@@ -90,7 +87,7 @@ RoadSystem::~RoadSystem() {
 
 bool RoadSystem::inside(const CarMechanics &car) const {
 	for (RoadPiece* road_piece : road_pieces) {
-		if (road_piece->inside(car)) {
+		if (road_piece->inside(car.getPos())) {
 			return true;
 		}
 	}
@@ -106,7 +103,7 @@ vector<float> RoadSystem::sensor_readings(
 	for (float sensor : sensor_angles) {
 		float reading = std::numeric_limits<float>::max();
 		for (RoadPiece* road_piece : road_pieces) {
-			float temp_reading = road_piece->sensor_reading(car, sensor);
+			float temp_reading = road_piece->sensor_reading(car.getPos(), sensor);
 			reading = std::min(reading, temp_reading);
 		}
 		readings.push_back(reading);

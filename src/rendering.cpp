@@ -90,7 +90,7 @@ SensorsRenderer::SensorsRenderer(
 			: road_system(road_system),
 			car(car),
 			sensor_angles(sensor_angles),
-			lines(sf::LinesStrip, sensor_angles.size()) {}
+			lines(sf::Lines, 2 * sensor_angles.size()) {}
 
 void SensorsRenderer::draw(sf::RenderWindow& window) {
 	vector<float> readings = road_system->sensor_readings(*car, sensor_angles);
@@ -99,7 +99,8 @@ void SensorsRenderer::draw(sf::RenderWindow& window) {
 		float actual_angle = car->getRotation() + sensor_angles[i];
 		float endpoint_x = car_pos.x + (readings[i] * std::cos(actual_angle));
 		float endpoint_y = car_pos.y + (readings[i] * std::sin(actual_angle)); 
-		lines[i].position = sf::Vector2f(endpoint_x, endpoint_y);
+		lines[2 * i].position = sf::Vector2f(car_pos.x, car_pos.y);
+		lines[2 * i + 1].position = sf::Vector2f(endpoint_x, endpoint_y);
 	}
 	window.draw(lines);
 }
