@@ -100,10 +100,11 @@ vector<float> RoadSystem::sensor_readings(
 	vector<float> readings;
 	readings.reserve(sensor_angles.size());
 
-	for (float sensor : sensor_angles) {
+	for (float angle : sensor_angles) {
+		float car_adjusted_angle = car.getRotation() + angle;
 		bool found_reading = false;
-		float cos_sensor = std::cos(sensor);
-		float sin_sensor = std::sin(sensor);
+		float cos_sensor = std::cos(car_adjusted_angle);
+		float sin_sensor = std::sin(car_adjusted_angle);
 
 		Vec2d<float> car_pos = car.getPos();
 		Vec2d<float> sensor_endpoint = car.getPos();
@@ -111,13 +112,14 @@ vector<float> RoadSystem::sensor_readings(
 
 		float total_reading = 0.0f;
 
-		while ((sensor_endpoint - prev_sensor_endpoint).abs() < 1e-3) { // TODO: make this cheaper
+		while ((sensor_endpoint - prev_sensor_endpoint).abs() > 1e-5) { // TODO: make this cheaper
+			std::cout << "  entering loop\n";
 
 			prev_sensor_endpoint = sensor_endpoint;
 
 			float reading = -1.0f;
 			for (RoadPiece* road_piece : road_pieces) {
-				float r = road_piece->sensor_reading(sensor_endpoint, sensor);
+				float r = road_piece->sensor_reading(sensor_endpoint, car_adjusted_angle);
 				if (r >= 0) {
 					reading = std::max(reading, r);
 					found_reading = true;
@@ -126,14 +128,16 @@ vector<float> RoadSystem::sensor_readings(
 				}
 			}
 
-			float sensor_x = (sensor_endpoint.x - car_pos.x) * cos_sensor + car_pos.x;
-			float sensor_y = (sensor_endpoint.y - car_pos.y) * sin_sensor + car_pos.y;
+			float sensor_x = total_reading * cos_sensor + car_pos.x;
+			float sensor_y = total_reading * sin_sensor + car_pos.y;
 			sensor_endpoint = Vec2d<float> {sensor_x, sensor_y};
 		}
 
 		if (!found_reading) {
 			total_reading = std::numeric_limits<float>::max();
 		}
+
+		std::cout << (found_reading ? "True" : "False") << "\n";
 
 		readings.push_back(total_reading);
 	}
