@@ -29,6 +29,13 @@ const car_state ON_ROAD_STANDING_STILL = 3;
 const car_state OFF_ROAD               = 4;
 const car_state REACHED_GOAL           = 5;
 
+Car::Car(CarMechanics body, Destination* goal) : body(body), goal(goal), state(INACTIVE) {
+	for (int i = 0; i < 10; i++) {
+		float angle = i * 2.0f * M_PI / 10.0f;
+		sensor_angles.push_back(angle);
+	}
+}
+
 car_state TrafficEnvironment::getCarState(const unsigned long car_id) const {
 	auto it = active_cars.find(car_id);
 	if (it == active_cars.end()) {
@@ -58,11 +65,19 @@ Vec2d<float> TrafficEnvironment::getCarDestination(unsigned long car_id) const {
 	return car->goal->position;
 }
 
+
+vector<float> TrafficEnvironment::getCarSensorReadings(unsigned long car_id) const {
+	auto it = active_cars.find(car_id);
+	const CarMechanics& car = it->second.body;
+	const vector<float>& sensor_angles = it->second.sensor_angles;
+	return road_system->sensor_readings(car, sensor_angles);
+}
+
 unsigned long TrafficEnvironment::spawnCar(size_t start_idx, size_t goal_idx) {
 	car_counter++;
 	Destination* start = &destinations[start_idx];
 	Destination* goal = &destinations[goal_idx];
-	active_cars.insert(std::pair<unsigned int, Car>(car_counter, Car{start->placeCar(), goal, INACTIVE}));
+	active_cars.insert(std::pair<unsigned int, Car>(car_counter, Car{start->placeCar(), goal}));
 	return car_counter;
 }
 

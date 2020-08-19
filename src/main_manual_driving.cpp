@@ -19,8 +19,8 @@ int main() {
 	CarSprite car_sprite{car};
 
 	vector<float> sensor_angles;
-	for (int i = 0; i < 8; i++) {
-		float f = i * M_PI / 4;
+	for (int i = 0; i < 10; i++) {
+		float f = i * 2 * M_PI / 10;
 		sensor_angles.push_back(f);
 	}
 	SensorsRenderer sensors_renderer {environment->road_system, car, sensor_angles};

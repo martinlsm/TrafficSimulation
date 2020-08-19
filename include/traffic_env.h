@@ -10,7 +10,7 @@
 namespace traffic {
 
 /*
- * Cars spawn and end at Destinations
+ * Cars spawn and end on Destinations
  */
 struct Destination {
 	const Vec2d<float> position;
@@ -30,8 +30,11 @@ extern const car_state REACHED_GOAL;
 
 struct Car {
 	CarMechanics body;
+	vector<float> sensor_angles;
 	Destination* goal;
-	car_state state = INACTIVE;
+	car_state state;
+
+	Car(CarMechanics body, Destination* goal);
 };
 
 class TrafficEnvironment {
@@ -49,6 +52,7 @@ public:
 	CarMechanics* getCarMechanics(unsigned long car_id);
 	size_t destinationCount() const;
 	Vec2d<float> getCarDestination(unsigned long car_id) const;
+	vector<float> getCarSensorReadings(unsigned long car_id) const;
 	size_t carCount() const;
 	std::vector<unsigned long> get_car_ids();
 	void removeCar(unsigned long car_id);
