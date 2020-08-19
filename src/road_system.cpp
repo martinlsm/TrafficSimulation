@@ -24,7 +24,7 @@ bool StraightRoad::inside(Vec2d<float> pos) const {
 
 float StraightRoad::sensor_reading(Vec2d<float> sensor_origin, float angle) const {
 	if (!inside(sensor_origin)) {
-		return std::numeric_limits<float>::max();
+		return -1.0f;
 	}
 	float road_rotation = this->getRotation();
 	float transformed_angle = angle - road_rotation;
@@ -101,12 +101,41 @@ vector<float> RoadSystem::sensor_readings(
 	readings.reserve(sensor_angles.size());
 
 	for (float sensor : sensor_angles) {
-		float reading = std::numeric_limits<float>::max();
-		for (RoadPiece* road_piece : road_pieces) {
-			float temp_reading = road_piece->sensor_reading(car.getPos(), sensor);
-			reading = std::min(reading, temp_reading);
+		bool found_reading = false;
+		float cos_sensor = std::cos(sensor);
+		float sin_sensor = std::sin(sensor);
+
+		Vec2d<float> car_pos = car.getPos();
+		Vec2d<float> sensor_endpoint = car.getPos();
+		Vec2d<float> prev_sensor_endpoint {-1.0f, -1.0f};
+
+		float total_reading = 0.0f;
+
+		while ((sensor_endpoint - prev_sensor_endpoint).abs() < 1e-3) { // TODO: make this cheaper
+
+			prev_sensor_endpoint = sensor_endpoint;
+
+			float reading = -1.0f;
+			for (RoadPiece* road_piece : road_pieces) {
+				float r = road_piece->sensor_reading(sensor_endpoint, sensor);
+				if (r >= 0) {
+					reading = std::max(reading, r);
+					found_reading = true;
+					total_reading += reading;
+					break;
+				}
+			}
+
+			float sensor_x = (sensor_endpoint.x - car_pos.x) * cos_sensor + car_pos.x;
+			float sensor_y = (sensor_endpoint.y - car_pos.y) * sin_sensor + car_pos.y;
+			sensor_endpoint = Vec2d<float> {sensor_x, sensor_y};
 		}
-		readings.push_back(reading);
+
+		if (!found_reading) {
+			total_reading = std::numeric_limits<float>::max();
+		}
+
+		readings.push_back(total_reading);
 	}
 	return readings;
 }

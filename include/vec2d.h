@@ -29,6 +29,12 @@ struct Vec2d {
 
 	template<class U>
 	friend std::ostream& operator<<(std::ostream &os, const Vec2d<U> &v);
+
+	template<class U>
+	friend bool operator==(const Vec2d<U> &rhs, const Vec2d<U> &lhs);
+
+	template<class U>
+	friend bool operator!=(const Vec2d<U> &rhs, const Vec2d<U> &lhs);
 };
 
 template <class T>
@@ -94,6 +100,16 @@ Vec2d<T> operator*(const T lhs, const Vec2d<T> &rhs) {
 template <class T>
 std::ostream& operator<<(std::ostream &os, const Vec2d<T> &v) {
 	return os << "(" << v.x << ", " << v.y << ")";
+}
+
+template <class T>
+bool operator==(const Vec2d<T> &rhs, const Vec2d<T> &lhs) {
+	return rhs.x == lhs.x && lhs.y == rhs.y;
+}
+
+template <class T>
+bool operator!=(const Vec2d<T> &rhs, const Vec2d<T> &lhs) {
+	return !(rhs == lhs);
 }
 
 } // geometry
