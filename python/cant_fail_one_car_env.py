@@ -6,7 +6,7 @@ TRAFFIC_ENV_ID = 1
 env.load_traffic_environment(TRAFFIC_ENV_ID)
 
 def state_dim_size():
-    return env.state_dim_size()
+    return 8
 
 def action_dim_size():
     return 3

@@ -22,9 +22,9 @@ size_t car_count() {
 	return environment->carCount();
 }
 
-size_t state_dim_size() {
-	return 8;
-}
+// size_t state_dim_size() {
+// 	return 8;
+// }
 
 size_t action_dim_size() {
 	return 13;
@@ -52,7 +52,7 @@ void update() {
 	environment->update(dt);
 }
 
-py::array_t<float> read_state(size_t car_id) {
+py::array_t<float> read_state_simple(size_t car_id) {
 	traffic::CarMechanics* car = environment->getCarMechanics(car_id);
 
 	Vec2d<float> car_pos = car->getPos();
@@ -67,7 +67,7 @@ py::array_t<float> read_state(size_t car_id) {
 	Vec2d<float> destination_pos = environment->getCarDestination(car_id);
 	Vec2d<float> vec_to_dest = destination_pos - car_pos;
 
-	auto result = py::array_t<float>(state_dim_size());
+	auto result = py::array_t<float>(8);
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
@@ -80,6 +80,40 @@ py::array_t<float> read_state(size_t car_id) {
 	res_data[6] = vec_to_dest.x;
 	res_data[7] = vec_to_dest.y;
 	
+	return result;
+}
+
+py::array_t<float> read_state_sensors(unsigned long car_id) {
+	traffic::CarMechanics* car = environment->getCarMechanics(car_id);
+
+	Vec2d<float> car_pos = car->getPos();
+	float speed = car->getSpeed();
+	float rotation = car->getRotation();
+	float steering_angle = car->getSteeringAngle();
+
+	float speed_x = speed * std::cos(rotation);
+	float speed_y = speed * std::sin(rotation);
+
+	Vec2d<float> destination_pos = environment->getCarDestination(car_id);
+	Vec2d<float> vec_to_dest = destination_pos - car_pos;
+
+	vector<float> sensors = environment->getCarSensorReadings(car_id);	
+
+	auto result = py::array_t<float>(16);
+	py::buffer_info res_buf = result.request();
+	float* res_data = (float*)res_buf.ptr;
+
+	res_data[0] = car_pos.x;
+	res_data[1] = car_pos.y;
+	res_data[2] = speed_x;
+	res_data[3] = speed_y;
+	res_data[4] = steering_angle;
+	res_data[5] = vec_to_dest.x;
+	res_data[6] = vec_to_dest.y;
+	for (size_t i = 0; i < sensors.size(); i++) {
+		res_data[i + 7] = sensors[i];
+	}
+
 	return result;
 }
 
@@ -99,7 +133,7 @@ int get_reward_advanced(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);
 	int score;
 	if (state == traffic::ON_ROAD_STANDING_STILL) {
-		score = -10;
+		score = -50;
 	} else if (state == traffic::REACHED_GOAL) {
 		score = max_dist;
 	} else if (state == traffic::OFF_ROAD) {

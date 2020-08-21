@@ -13,7 +13,7 @@ class TestStringMethods(unittest.TestCase):
         env.load_traffic_environment(1)
         car_id = env.spawn_car(0, 7)
         self.assertEqual(car_id, 1)
-        state = env.read_state(car_id)
+        state = env.read_state_simple(car_id)
         self.assertEqual(len(state), 8)
         reward = env.get_reward(car_id)
         self.assertEqual(reward, 0)

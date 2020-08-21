@@ -12,14 +12,15 @@ namespace env_api {
 void load_traffic_environment(unsigned int id);
 size_t destination_count();
 size_t car_count();
-size_t state_dim_size();
+// size_t state_dim_size();
 size_t action_dim_size();
 unsigned long spawn_car(size_t start, size_t goal);
 void remove_car(unsigned long car_id);
 traffic::car_action index_to_action(size_t idx);
 void update();
 void do_action(unsigned long car_id, traffic::car_action action);
-py::array_t<float> read_state(unsigned long car_id);
+py::array_t<float> read_state_simple(unsigned long car_id);
+py::array_t<float> read_state_sensors(unsigned long car_id);
 int get_reward_simple(unsigned long car_id);
 int get_reward_advanced(unsigned long car_id);
 bool in_terminal_state(unsigned long car_id);

@@ -62,7 +62,7 @@ class CarAgent():
         if saved_dqn_file_name is not None:
             self.dqn = self.load_dqn_from_file(saved_dqn_file_name)
         else:
-            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 32, 32, 32)
+            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 72, 128, 72)
         self.dqn.summary()
 
     def do_action(self, observation, explore):
@@ -70,6 +70,7 @@ class CarAgent():
             return np.random.choice(self.action_dim)
         else:
             q_values = self.dqn.predict(observation.reshape(1, env.state_dim_size()))
+            print(q_values)
             return np.argmax(q_values)
 
     def store_transition(self, from_state, to_state, action, reward, done):
