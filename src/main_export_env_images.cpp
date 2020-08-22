@@ -31,5 +31,13 @@ void export_environment_image(unsigned int env_id) {
 
 int main() {
 	mkdir("../env_images", 777);
-	export_environment_image(1);
+	unsigned int i = 1;
+	while (true) {
+		try {
+			export_environment_image(i);
+		} catch (std::invalid_argument& e) {
+			break;
+		}
+		i++;
+	}
 }

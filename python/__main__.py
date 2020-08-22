@@ -2,7 +2,7 @@ import numpy as np
 import pygame
 import env_api
 import agent
-import one_car_env as env
+import simple_one_car_env as env
 
 car_texture = pygame.image.load('assets/car.png')
 
@@ -29,7 +29,7 @@ def validation_render_episode(car_agent):
     clock = pygame.time.Clock()
     pygame.display.set_caption('Agent Training Episode')
 
-    background = pygame.image.load('env_images/env_1.jpg')
+    background = pygame.image.load('env_images/env_2.jpg')
     screen = pygame.display.set_mode((1000,800))
 
     state_counter = 0

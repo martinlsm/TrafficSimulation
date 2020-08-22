@@ -7,6 +7,8 @@ namespace env_api {
 // should this be global?
 static traffic::TrafficEnvironment* environment = nullptr;
 
+static const float MAX_DIST = std::hypot(WORLD_HEIGHT, WORLD_WIDTH);
+
 void load_traffic_environment(unsigned int id) {
 	if (environment != nullptr) {
 		delete environment;
@@ -103,15 +105,16 @@ py::array_t<float> read_state_sensors(unsigned long car_id) {
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
-	res_data[0] = car_pos.x;
-	res_data[1] = car_pos.y;
-	res_data[2] = speed_x;
-	res_data[3] = speed_y;
+	// output normalized vector
+	res_data[0] = car_pos.x / MAX_DIST;
+	res_data[1] = car_pos.y / MAX_DIST;
+	res_data[2] = speed_x / MAX_DIST;
+	res_data[3] = speed_y / MAX_DIST;
 	res_data[4] = steering_angle;
-	res_data[5] = vec_to_dest.x;
-	res_data[6] = vec_to_dest.y;
+	res_data[5] = vec_to_dest.x / MAX_DIST;
+	res_data[6] = vec_to_dest.y / MAX_DIST;
 	for (size_t i = 0; i < sensors.size(); i++) {
-		res_data[i + 7] = sensors[i];
+		res_data[i + 7] = sensors[i] / MAX_DIST;
 	}
 
 	return result;
@@ -128,20 +131,19 @@ int get_reward_simple(unsigned long car_id) {
 	}
 }
 
-const int max_dist = std::hypot(WORLD_WIDTH, WORLD_HEIGHT);
 int get_reward_advanced(unsigned long car_id) {
 	traffic::car_state state = environment->getCarState(car_id);
 	int score;
 	if (state == traffic::ON_ROAD_STANDING_STILL) {
 		score = -50;
 	} else if (state == traffic::REACHED_GOAL) {
-		score = max_dist;
+		score = MAX_DIST;
 	} else if (state == traffic::OFF_ROAD) {
 		traffic::CarMechanics* car = environment->getCarMechanics(car_id);
 		Vec2d<float> car_pos = car->getPos();
 		Vec2d<float> dest = environment->getCarDestination(car_id);
 		Vec2d<float> to_dest = dest - car_pos;
-		score = to_dest.abs() - max_dist;
+		score = to_dest.abs() - MAX_DIST;
 	} else {
 		score = 0;
 	}

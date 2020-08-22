@@ -11,7 +11,7 @@ using namespace traffic;
 
 int main() {
 	texture_manager::load_textures();
-	TrafficEnvironment* environment = load_environment(1);
+	TrafficEnvironment* environment = load_environment(2);
 	WorldRenderer world_renderer {environment->road_system->road_pieces};
 
 	unsigned long car_id = environment->spawnCar(0, 4);

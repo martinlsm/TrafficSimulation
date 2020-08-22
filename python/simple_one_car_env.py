@@ -2,11 +2,11 @@ import env_api as env
 import numpy as np
 import random
 
-TRAFFIC_ENV_ID = 1
+TRAFFIC_ENV_ID = 2
 env.load_traffic_environment(TRAFFIC_ENV_ID)
 
 def state_dim_size():
-    return 17
+    return 16
 
 def action_dim_size():
     return 5
@@ -26,9 +26,15 @@ def __translate_action(action):
 
 def reset():
     global car_id
-    car_id = env.spawn_car(0, 6)
-    observation = env.read_state_simple(car_id)
-    reward = env.get_reward_simple(car_id)
+
+    try:
+        env_api.remove_car(car_id)
+    except NameError:
+        pass
+
+    car_id = env.spawn_car(0, 1)
+    observation = env.read_state_sensors(car_id)
+    reward = env.get_reward_advanced(car_id)
     done = env.in_terminal_state(car_id)
     return observation, reward, done
 
@@ -37,8 +43,8 @@ def step(action):
     env.do_action(car_id, action)
     env.update()
 
-    observation = env.read_state_simple(car_id)
-    reward = env.get_reward_simple(car_id)
+    observation = env.read_state_sensors(car_id)
+    reward = env.get_reward_advanced(car_id)
     done = env.in_terminal_state(car_id)
 
     return observation, reward, done

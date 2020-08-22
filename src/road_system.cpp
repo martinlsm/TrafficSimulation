@@ -158,7 +158,7 @@ vector<float> RoadSystem::sensor_readings(
 		}
 
 		if (!found_reading) {
-			total_reading = -1.0f;
+			total_reading = 0.0f;
 		}
 
 		readings.push_back(total_reading);
