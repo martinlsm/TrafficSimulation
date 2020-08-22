@@ -15,13 +15,17 @@ public:
 	virtual ~RoadPiece() {};
 	virtual bool inside(Vec2d<float> pos) const = 0;
 
-	/* If the car is within the road piece, this function returns the distance
-	 * between the center of the car and where the car's sensor cross the
+	/* If the sensor is placed within the road piece, this function returns the
+	 * distance between the sensor's placement and sensor's ray cross the
 	 * border of this road piece.
 	 *
-	 * If the car is NOT within the road piece, this function will return FLT_MAX
+	 * If the car is NOT within the road piece, this function will return -1
+	 * 
+	 * sensor_origin: Where the sensor is located
+	 * angle: Which direction the sensor's ray is pointing
 	 *
-	 * The parameter angle is zero when it is pointing in the car's driving direction
+	 * returns: The distance between the sensor and the border of this road
+	 * piece, given the angle the sensor's ray is aiming
 	 */
 	virtual float sensor_reading(Vec2d<float> sensor_origin, float angle) const = 0;
 };
