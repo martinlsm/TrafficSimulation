@@ -92,7 +92,7 @@ TEST(TestStraightRoad, sensor_reading_1) {
 	Vec2d<float> a {0, 0};
 	Vec2d<float> b {200, 0};
 	StraightRoad road {a, b, 50};
-	EXPECT_EQ(road.sensor_reading(pos, sensor_angle), std::numeric_limits<float>::max());
+	ASSERT_NEAR(road.sensor_reading(pos, sensor_angle), 100.0f, 1e-2);
 }
 
 TEST(TestStraightRoad, sensor_reading_2) {
@@ -101,7 +101,7 @@ TEST(TestStraightRoad, sensor_reading_2) {
 	Vec2d<float> a {0, 0};
 	Vec2d<float> b {200, 0};
 	StraightRoad road {a, b, 50};
-	EXPECT_EQ(road.sensor_reading(pos, sensor_angle), std::numeric_limits<float>::max());
+	ASSERT_NEAR(road.sensor_reading(pos, sensor_angle), 100.0f, 1e-2);
 }
 
 TEST(TestStraightRoad, sensor_reading_3) {
@@ -128,7 +128,7 @@ TEST(TestStraightRoad, sensor_reading_5) {
 	Vec2d<float> a {200, 0};
 	Vec2d<float> b {0, 0};
 	StraightRoad road {a, b, 50};
-	EXPECT_EQ(road.sensor_reading(pos, sensor_angle), std::numeric_limits<float>::max());
+	ASSERT_NEAR(road.sensor_reading(pos, sensor_angle), 100.0f, 1e-5);
 }
 
 TEST(TestStraightRoad, sensor_reading_6) {
@@ -137,7 +137,7 @@ TEST(TestStraightRoad, sensor_reading_6) {
 	Vec2d<float> a {200, 0};
 	Vec2d<float> b {0, 0};
 	StraightRoad road {a, b, 50};
-	EXPECT_EQ(road.sensor_reading(pos, sensor_angle), std::numeric_limits<float>::max());
+	ASSERT_NEAR(road.sensor_reading(pos, sensor_angle), 100.0f, 1e-5);
 }
 
 TEST(TestStraightRoad, sensor_reading_7) {

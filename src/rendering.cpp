@@ -92,6 +92,14 @@ SensorsRenderer::SensorsRenderer(
 			sensor_angles(sensor_angles),
 			lines(sf::Lines, 2 * sensor_angles.size()) {}
 
+SensorsRenderer& SensorsRenderer::operator=(SensorsRenderer&& rhs) {
+	road_system = rhs.road_system;
+	car = rhs.car;
+	sensor_angles = rhs.sensor_angles;
+	lines.resize(2 * sensor_angles.size());
+	return *this;
+}
+
 void SensorsRenderer::draw(sf::RenderWindow& window) {
 	vector<float> readings = road_system->sensor_readings(*car, sensor_angles);
 	Vec2d<float> car_pos = car->getPos();

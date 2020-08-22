@@ -68,6 +68,7 @@ int main() {
 			car_id = environment->spawnCar(0, 7);
 			car = environment->getCarMechanics(car_id);
 			car_sprite = CarSprite{car};
+			sensors_renderer = SensorsRenderer{environment->road_system, car, sensor_angles};
 		}
 
 		// render screen

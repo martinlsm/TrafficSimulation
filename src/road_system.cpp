@@ -26,22 +26,45 @@ float StraightRoad::sensor_reading(Vec2d<float> sensor_origin, float angle) cons
 	if (!inside(sensor_origin)) {
 		return -1.0f;
 	}
-	float road_rotation = this->getRotation();
-	float transformed_angle = angle - road_rotation;
+	const float road_rotation = this->getRotation();
+	const float transformed_angle = angle - road_rotation;
 	float sin_angle = std::sin(transformed_angle);
+	float cos_angle = std::cos(transformed_angle);
+
+	const float eps = 0.0001;
+	if (sin_angle == 0) {
+		sin_angle += eps;
+	}
+	if (cos_angle == 0) {
+		cos_angle += eps;
+	}
 
 	sensor_origin -= a;
 	sensor_origin.rotate(-road_rotation);
 
-	float f_eps = 0.001;
-	if (sin_angle > f_eps) {
-		float dist_to_upper_border = width / 2 - sensor_origin.y;
-		return dist_to_upper_border / sin_angle;
-	} else if (sin_angle < -f_eps) {
-		float dist_to_lower_border = width / 2 + sensor_origin.y;
-		return -dist_to_lower_border / sin_angle;
+	float w, h, theta;
+	if (sin_angle > 0 && cos_angle > 0) {
+		w = length - sensor_origin.x;
+		h = width / 2 - sensor_origin.y;
+		theta = transformed_angle;
+	} else if (sin_angle > 0 && cos_angle < 0) {
+		w = sensor_origin.x;
+		h = width / 2 - sensor_origin.y;
+		theta = M_PI - transformed_angle;
+	} else if (sin_angle < 0 && cos_angle > 0) {
+		w = length - sensor_origin.x;
+		h = sensor_origin.y + width / 2;
+		theta = - transformed_angle;
+	} else if (sin_angle < 0 && cos_angle < 0) {
+		w = sensor_origin.x;
+		h = sensor_origin.y + width / 2;
+		theta = transformed_angle + M_PI;
+	}
+
+	if (h > w * std::tan(theta)) {
+		return w / std::cos(theta);
 	} else {
-		return std::numeric_limits<float>::max();
+		return h / std::sin(theta);
 	}
 }
 
@@ -135,7 +158,7 @@ vector<float> RoadSystem::sensor_readings(
 		}
 
 		if (!found_reading) {
-			total_reading = std::numeric_limits<float>::max();
+			total_reading = -1.0f;
 		}
 
 		readings.push_back(total_reading);

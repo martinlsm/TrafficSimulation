@@ -62,5 +62,6 @@ private:
 public:
 	SensorsRenderer(RoadSystem* road_system,
 			CarMechanics* car, vector<float>& sensor_angles);
+	SensorsRenderer& operator=(SensorsRenderer&& rhs);
 	void draw(sf::RenderWindow& window);
 };
