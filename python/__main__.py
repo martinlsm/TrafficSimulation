@@ -10,6 +10,8 @@ import simple_one_car_env as env
 def argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--world', type=int, default=1)
+    parser.add_argument('-s', '--start_index', type=int, default=0)
+    parser.add_argument('-e', '--end_index', type=int, default=1)
     args = parser.parse_args()
     return args
 
@@ -43,7 +45,7 @@ def validation_render_episode(car_agent, background):
     state_counter = 0
     observation, reward, done = env.reset()
     while not done:
-        action = car_agent.do_action(observation, False)
+        action = car_agent.do_action(observation, True)
         next_observation, reward, done = env.step(action)
         if np.all(observation == next_observation):
             done = True
@@ -68,8 +70,10 @@ def validation_render_episode(car_agent, background):
 if __name__ == '__main__':
     args = argument_parser()
     world_id = args.world
+    start_index = args.start_index
+    end_index = args.end_index
 
-    env.init(world_id)
+    env.init(world_id, start_index, end_index)
     background = pygame.image.load(f'env_images/env_{world_id}.jpg')
     car_agent = agent.CarAgent(1e-3, 0.99, env.state_dim_size(), env.action_dim_size(), 1.0, 0.00001, 0.035, 100000)
 
