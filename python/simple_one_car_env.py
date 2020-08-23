@@ -21,7 +21,11 @@ def __translate_action(action):
     elif action == 4:
         return env_api.car_action_turn_right_hard
 
-def init(traffic_env_id):
+def init(traffic_env_id, car_start, car_end):
+    global start_index, end_index
+
+    start_index = car_start
+    end_index = car_end
     env_api.load_traffic_environment(traffic_env_id)
 
 def reset():
@@ -32,7 +36,7 @@ def reset():
     except NameError:
         pass
 
-    car_id = env_api.spawn_car(0, 1)
+    car_id = env_api.spawn_car(start_index, end_index)
     observation = env_api.read_state_sensors(car_id)
     reward = env_api.get_reward_advanced(car_id)
     done = env_api.in_terminal_state(car_id)
