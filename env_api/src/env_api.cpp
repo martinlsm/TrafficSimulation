@@ -143,7 +143,7 @@ int get_reward_advanced(unsigned long car_id) {
 		Vec2d<float> car_pos = car->getPos();
 		Vec2d<float> dest = environment->getCarDestination(car_id);
 		Vec2d<float> to_dest = dest - car_pos;
-		score = to_dest.abs() - MAX_DIST;
+		score = -to_dest.abs();
 	} else {
 		score = 0;
 	}

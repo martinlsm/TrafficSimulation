@@ -51,6 +51,7 @@ def validation_render_episode(car_agent):
         render_cars(screen)
         pygame.display.update()
 
+    print(f'  Car position: {env.get_car_position()}')
     print(f'  Reward: {reward}')
     print(f'  States: {state_counter}')
 
@@ -80,6 +81,7 @@ if __name__ == '__main__':
             loss_history[state_counter] = loss
             state_counter += 1
 
+        print(f'  Car position: {env.get_car_position()}')
         print(f'  Reward: {reward}')
         print(f'  States: {state_counter}')
         print(f'  Epsilon: {epsilon:.2f}')

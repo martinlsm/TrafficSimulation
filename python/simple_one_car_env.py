@@ -49,3 +49,5 @@ def step(action):
 
     return observation, reward, done
 
+def get_car_position():
+    return env_api.get_car_position(car_id)
