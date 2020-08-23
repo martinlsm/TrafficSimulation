@@ -4,12 +4,15 @@ import numpy as np
 
 import one_car_env as env
 
-def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense, thd_dense):
+def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense,
+              thd_dense, fourth_dense, fifth_dense):
     model = keras.Sequential([
         keras.layers.Input(state_dim),
         keras.layers.Dense(fst_dense, activation='relu'),
         keras.layers.Dense(snd_dense, activation='relu'),
-        keras.layers.Dense(thd_dense, activation='relu'),
+        # keras.layers.Dense(thd_dense, activation='relu'),
+        # keras.layers.Dense(fourth_dense, activation='relu'),
+        # keras.layers.Dense(fifth_dense, activation='relu'),
         keras.layers.Dense(action_dim, activation='linear')
     ])
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
@@ -62,14 +65,14 @@ class CarAgent():
         if saved_dqn_file_name is not None:
             self.dqn = self.load_dqn_from_file(saved_dqn_file_name)
         else:
-            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 40, 40, 40)
+            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 100, 100, 100, 100, 100)
         self.dqn.summary()
 
     def do_action(self, observation, explore):
         if explore and np.random.rand() < self.eps:
             return np.random.choice(self.action_dim)
         else:
-            q_values = self.dqn.predict(observation.reshape(1, env.state_dim_size()))
+            q_values = self.dqn.predict(observation.reshape(1, self.state_dim))
             return np.argmax(q_values)
 
     def store_transition(self, from_state, to_state, action, reward, done):
