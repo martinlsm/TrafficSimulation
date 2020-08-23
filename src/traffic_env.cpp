@@ -192,6 +192,18 @@ void load_world_2(vector<RoadPiece*> &v, vector<Destination> &dests) {
 	dests.emplace_back(D, 3.0f * M_PI / 2.0f);
 }
 
+void load_world_3(vector<RoadPiece*> &v, vector<Destination> &dests) {
+	Vec2d<float> center {WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f};
+	float side_len = std::min(WORLD_HEIGHT, WORLD_WIDTH) / 2.0f;
+	Vec2d<float> A {center.x - side_len / 2.5f, center.y - side_len / 2.5f};
+	Vec2d<float> B {center.x + side_len / 2.5f, center.y + side_len / 2.5f};
+
+	v.push_back(new FilledSquare(center, side_len, 0.0f));
+
+	dests.emplace_back(A, M_PI / 2.0f);
+	dests.emplace_back(B, 3.0f * M_PI / 2.0f);
+}
+
 TrafficEnvironment* load_environment(unsigned int id) {
 	vector<RoadPiece*> v;
 	vector<Destination> dests;
@@ -201,6 +213,9 @@ TrafficEnvironment* load_environment(unsigned int id) {
 			break;
 		case 2:
 			load_world_2(v, dests);
+			break;
+		case 3:
+			load_world_3(v, dests);
 			break;
 	}
 

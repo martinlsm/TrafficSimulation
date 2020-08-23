@@ -11,10 +11,10 @@ using namespace traffic;
 
 int main() {
 	texture_manager::load_textures();
-	TrafficEnvironment* environment = load_environment(2);
+	TrafficEnvironment* environment = load_environment(3);
 	WorldRenderer world_renderer {environment->road_system->road_pieces};
 
-	unsigned long car_id = environment->spawnCar(0, 4);
+	unsigned long car_id = environment->spawnCar(0, 1);
 	CarMechanics* car = environment->getCarMechanics(car_id);
 	CarSprite car_sprite{car};
 
