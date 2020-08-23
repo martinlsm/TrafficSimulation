@@ -130,13 +130,13 @@ vector<float> RoadSystem::sensor_readings(
 
 		Vec2d<float> car_pos = car.getPos();
 		Vec2d<float> sensor_endpoint = car.getPos();
-		Vec2d<float> prev_sensor_endpoint {-1.0f, -1.0f};
 
+		float prev_total_reading = -1.0f;
 		float total_reading = 0.0f;
 
-		while ((sensor_endpoint - prev_sensor_endpoint).abs() > 1e-5) {
+		while (total_reading != prev_total_reading) {
 
-			prev_sensor_endpoint = sensor_endpoint;
+			prev_total_reading = total_reading;
 
 			float reading = 0.0f;
 			for (RoadPiece* road_piece : road_pieces) {
