@@ -52,6 +52,21 @@ public:
 	float getLength() const;
 };
 
+class FilledSquare : public RoadPiece {
+private:
+	const Vec2d<float> location;
+	const float side_len;
+	const float rotation;
+public:
+	FilledSquare(Vec2d<float> location, float side_len, float rotation);
+	~FilledSquare() override;
+	bool inside(Vec2d<float> pos) const override;
+	float sensor_reading(Vec2d<float> sensor_origin, float angle) const override;
+	Vec2d<float> getLocation() const;
+	float getSideLen() const;
+	float getRotation() const;
+};
+
 class FilledCircularPiece : public RoadPiece {
 private:
 	Vec2d<float> position;

@@ -185,6 +185,8 @@ void load_world_2(vector<RoadPiece*> &v, vector<Destination> &dests) {
 	v.push_back(new StraightRoad(A, B, road_width));
 	v.push_back(new StraightRoad(B, C, road_width));
 	v.push_back(new StraightRoad(C, D, road_width));
+	v.push_back(new FilledSquare(B, road_width, 0.0f));
+	v.push_back(new FilledSquare(C, road_width, 0.0f));
 
 	dests.emplace_back(A, M_PI / 2.0f);
 	dests.emplace_back(D, 3.0f * M_PI / 2.0f);

@@ -24,6 +24,16 @@ public:
 	void draw(sf::RenderWindow &window) override;
 };
 
+class FilledSquareSprite : public RoadPieceSprite {
+private:
+	sf::RectangleShape rect;
+	sf::Transform transform;
+public:
+	FilledSquareSprite(FilledSquare* sq);
+	~FilledSquareSprite() override;
+	void draw(sf::RenderWindow &window) override;
+};
+
 class FilledCircularPieceSprite : public RoadPieceSprite {
 private:
 	sf::CircleShape circ;

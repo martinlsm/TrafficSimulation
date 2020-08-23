@@ -23,6 +23,26 @@ void StraightRoadSprite::draw(sf::RenderWindow &window) {
 	window.draw(rect, transform);
 }
 
+FilledSquareSprite::FilledSquareSprite(FilledSquare* sq)
+		: RoadPieceSprite(),
+		rect(sf::Vector2f(sq->getSideLen(), sq->getSideLen())),
+		transform(sf::Transform::Identity) {
+	Vec2d<float> location = sq->getLocation();
+	float side_len = sq->getSideLen();
+	float rotation = sq->getRotation();
+	transform.translate(location.x, location.y);
+	transform.rotate(rotation);
+	transform.translate(-side_len / 2.0f, -side_len / 2.0f);
+
+	rect.setFillColor(sf::Color(67, 67, 67));
+}
+
+FilledSquareSprite::~FilledSquareSprite() {}
+
+void FilledSquareSprite::draw(sf::RenderWindow &window) {
+	window.draw(rect, transform);
+}
+
 FilledCircularPieceSprite::FilledCircularPieceSprite(
 		FilledCircularPiece *road_piece) : RoadPieceSprite() {
 	float radius = road_piece->getRadius();
@@ -46,6 +66,9 @@ WorldRenderer::WorldRenderer(vector<RoadPiece*>& road_pieces) {
 		} else if (typeid(*road_piece) == typeid(StraightRoad)) {
 			StraightRoad* straight_road = dynamic_cast<StraightRoad*>(road_piece);
 			sprites.push_back(new StraightRoadSprite(straight_road));
+		} else if (typeid(*road_piece) == typeid(FilledSquare)) {
+			FilledSquare* filled_square = dynamic_cast<FilledSquare*>(road_piece);
+			sprites.push_back(new FilledSquareSprite(filled_square));
 		}
 	}
 }

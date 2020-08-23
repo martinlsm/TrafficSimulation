@@ -62,7 +62,7 @@ int main() {
 		environment->clearFinishedCars();
 		car_state state = environment->getCarState(car_id);
 
-		std::cout << (int)state << std::endl;
+		//std::cout << (int)state << std::endl;
 
 		if (state == NOT_FOUND) {
 			car_id = environment->spawnCar(0, 7);

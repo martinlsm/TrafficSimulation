@@ -76,6 +76,76 @@ float StraightRoad::getRotation() const {
 	return rotation;
 }
 
+FilledSquare::FilledSquare(Vec2d<float> location, float side_len, float rotation)
+		: location(location), side_len(side_len), rotation(rotation) {}
+
+FilledSquare::~FilledSquare() {}
+
+bool FilledSquare::inside(Vec2d<float> pos) const {
+	pos -= location;
+	pos.rotate(-rotation);
+	return pos.x >= -side_len / 2.0f && pos.y >= -side_len / 2.0f
+			&& pos.x <= side_len / 2.0f && pos.y <= side_len / 2.0f;
+}
+
+float FilledSquare::sensor_reading(Vec2d<float> sensor_origin, float angle) const {
+	if (!inside(sensor_origin)) {
+		return 0.0f;
+	}
+	const float road_rotation = rotation;
+	const float transformed_angle = angle - road_rotation;
+	float sin_angle = std::sin(transformed_angle);
+	float cos_angle = std::cos(transformed_angle);
+
+	const float eps = 0.0001;
+	if (sin_angle == 0) {
+		sin_angle += eps;
+	}
+	if (cos_angle == 0) {
+		cos_angle += eps;
+	}
+
+	sensor_origin -= location;
+	sensor_origin.rotate(-road_rotation);
+
+	float w, h, theta;
+	if (sin_angle > 0 && cos_angle > 0) {
+		w = side_len / 2.0f - sensor_origin.x;
+		h = side_len / 2.0f - sensor_origin.y;
+		theta = transformed_angle;
+	} else if (sin_angle > 0 && cos_angle < 0) {
+		w = sensor_origin.x + side_len / 2.0f;
+		h = side_len / 2.0f - sensor_origin.y;
+		theta = M_PI - transformed_angle;
+	} else if (sin_angle < 0 && cos_angle > 0) {
+		w = side_len / 2.0f - sensor_origin.x;
+		h = sensor_origin.y + side_len / 2.0f;
+		theta = - transformed_angle;
+	} else if (sin_angle < 0 && cos_angle < 0) {
+		w = sensor_origin.x + side_len / 2.0f;
+		h = sensor_origin.y + side_len / 2.0f;
+		theta = transformed_angle + M_PI;
+	}
+
+	if (h > w * std::tan(theta)) {
+		return w / std::cos(theta);
+	} else {
+		return h / std::sin(theta);
+	}
+}
+
+Vec2d<float> FilledSquare::getLocation() const {
+	return location;
+}
+
+float FilledSquare::getSideLen() const {
+	return side_len;
+}
+
+float FilledSquare::getRotation() const {
+	return rotation;
+}
+
 FilledCircularPiece::FilledCircularPiece(Vec2d<float> position, float radius)
 	: RoadPiece(), position(position), radius(radius) {}
 
