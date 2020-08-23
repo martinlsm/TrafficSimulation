@@ -2,9 +2,6 @@ import env_api
 import numpy as np
 import random
 
-TRAFFIC_ENV_ID = 2
-env_api.load_traffic_environment(TRAFFIC_ENV_ID)
-
 def state_dim_size():
     return 16
 
@@ -23,6 +20,9 @@ def __translate_action(action):
         return env_api.car_action_turn_left_hard
     elif action == 4:
         return env_api.car_action_turn_right_hard
+
+def init(traffic_env_id):
+    env_api.load_traffic_environment(traffic_env_id)
 
 def reset():
     global car_id

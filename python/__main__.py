@@ -1,8 +1,17 @@
+import argparse
+
 import numpy as np
 import pygame
 import env_api
 import agent
 import simple_one_car_env as env
+
+
+def argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--world', type=int, default=1)
+    args = parser.parse_args()
+    return args
 
 car_texture = pygame.image.load('assets/car.png')
 
@@ -23,13 +32,12 @@ def render_cars(screen):
         car_transform = get_car_transform(rotation, [int(x) for x in size])
         screen.blit(car_transform, adjusted_position)
 
-def validation_render_episode(car_agent):
+def validation_render_episode(car_agent, background):
     print('Validation Round')
     pygame.init()
     clock = pygame.time.Clock()
     pygame.display.set_caption('Agent Training Episode')
 
-    background = pygame.image.load('env_images/env_2.jpg')
     screen = pygame.display.set_mode((1000,800))
 
     state_counter = 0
@@ -58,6 +66,11 @@ def validation_render_episode(car_agent):
     pygame.quit()
 
 if __name__ == '__main__':
+    args = argument_parser()
+    world_id = args.world
+
+    env.init(world_id)
+    background = pygame.image.load(f'env_images/env_{world_id}.jpg')
     car_agent = agent.CarAgent(1e-3, 0.99, env.state_dim_size(), env.action_dim_size(), 1.0, 0.00001, 0.035, 100000)
 
     training_rounds = 100000
@@ -90,4 +103,4 @@ if __name__ == '__main__':
         car_agent.save_dqn_to_file('one_car_env.h5')
 
         if rendering_on and i % 5 == 0:
-            validation_render_episode(car_agent)
+            validation_render_episode(car_agent, background)
