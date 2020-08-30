@@ -11,7 +11,7 @@ PYBIND11_MODULE(env_api, m) {
     m.def("car_count", &env_api::car_count);
 	// m.def("state_dim_size", &env_api::state_dim_size);
 	m.def("action_dim_size", &env_api::action_dim_size);
-    m.def("spawn_car", &env_api::spawn_car);
+	m.def("spawn_car", &env_api::spawn_car);
 	m.def("remove_car", &env_api::remove_car);
 	m.def("index_to_action", &env_api::index_to_action);
 	m.def("do_action", &env_api::do_action);
@@ -22,9 +22,11 @@ PYBIND11_MODULE(env_api, m) {
 	m.def("get_reward_advanced", &env_api::get_reward_advanced);
 	m.def("in_terminal_state", &env_api::in_terminal_state);
 	m.def("get_car_position", &env_api::get_car_position);
+	m.def("get_car_destination", &env_api::get_car_destination);
 	m.def("get_car_size", &env_api::get_car_size);
 	m.def("get_car_rotation_degrees", &env_api::get_car_rotation_degrees);
 	m.def("get_car_ids", &env_api::get_car_ids);
+	m.def("get_goal_margin", &env_api::get_goal_margin);
 
 	m.attr("car_action_do_nothing")        = traffic::DO_NOTHING;
 	m.attr("car_action_brake_light")       = traffic::BRAKE_LIGHT;

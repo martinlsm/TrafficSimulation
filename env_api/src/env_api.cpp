@@ -161,6 +161,11 @@ std::tuple<float, float> get_car_position(unsigned long car_id) {
 	return std::make_tuple(pos.x, pos.y);
 }
 
+std::tuple<float, float> get_car_destination(unsigned long car_id) {
+	Vec2d<float> dest = environment->getCarDestination(car_id);
+	return std::make_tuple(dest.x, dest.y);
+}
+
 std::tuple<float, float> get_car_size(unsigned long car_id) {
 	Vec2d<float> size = environment->getCarMechanics(car_id)->getSize();
 	return std::make_tuple(size.x, size.y);
@@ -180,4 +185,9 @@ py::list get_car_ids() {
 	return l;
 }
 
+int get_goal_margin() {
+	return GOAL_MARGIN;
+}
+
 } // namespace env_api
+
