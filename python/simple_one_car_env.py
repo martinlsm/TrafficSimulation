@@ -55,3 +55,6 @@ def step(action):
 
 def get_car_position():
     return env_api.get_car_position(car_id)
+
+def get_car_destination():
+    return env_api.get_car_destination(car_id)

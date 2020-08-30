@@ -1,108 +1,67 @@
+import simple_one_car_env as env
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-import numpy as np
+import matplotlib.pyplot as plt
 
-import one_car_env as env
+class ProbabilityDistribution(tf.keras.Model):
+  def call(self, logits, **kwargs):
+    return tf.squeeze(tf.random.categorical(logits, 1), axis=-1)
 
-def build_dqn(learning_rate, state_dim, action_dim, fst_dense, snd_dense,
-              thd_dense, fourth_dense, fifth_dense):
-    model = keras.Sequential([
-        keras.layers.Input(state_dim),
-        keras.layers.Dense(fst_dense, activation='relu'),
-        keras.layers.Dense(snd_dense, activation='relu'),
-        # keras.layers.Dense(thd_dense, activation='relu'),
-        # keras.layers.Dense(fourth_dense, activation='relu'),
-        # keras.layers.Dense(fifth_dense, activation='relu'),
-        keras.layers.Dense(action_dim, activation='linear')
-    ])
-    model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
-                  loss='mean_squared_error')
-    return model
 
-class ReplayBuffer():
-    def __init__(self, memory_size, state_dim):
-        self.memory_size = memory_size
-        self.memory_counter = 0
-        self.from_state_memory = np.zeros((memory_size, state_dim))
-        self.to_state_memory = np.zeros((memory_size, state_dim))
-        self.action_memory = np.zeros(memory_size, dtype=np.int32)
-        self.reward_memory = np.zeros(memory_size, dtype=np.int32)
-        self.terminal_state_memory = np.zeros(memory_size, dtype=np.bool)
+class Model(tf.keras.Model):
+  def __init__(self, num_actions):
+    super().__init__('mlp_policy')
+    self.hidden1 = keras.layers.Dense(128, activation='relu')
+    self.hidden2 = keras.layers.Dense(128, activation='relu')
+    self.value = keras.layers.Dense(1, name='value')
+    self.logits = keras.layers.Dense(num_actions, name='policy_logits')
+    self.dist = ProbabilityDistribution()
 
-    def store_transition(self, from_state, to_state, action, reward, done):
-        index = self.memory_counter % self.memory_size
-        self.from_state_memory[index] = from_state
-        self.to_state_memory[index] = to_state
-        self.action_memory[index] = action
-        self.reward_memory[index] = reward
-        self.terminal_state_memory[index] = done
-        self.memory_counter += 1
+  def call(self, inputs, **kwargs):
+    x = tf.convert_to_tensor(inputs)
+    hidden_logs = self.hidden1(x)
+    hidden_vals = self.hidden2(x)
+    return self.logits(hidden_logs), self.value(hidden_vals)
 
-    def get_batch(self, batch_size):
-        current_memory_size = min(self.memory_size, self.memory_counter)
-        batch_indices = np.random.choice(current_memory_size, batch_size, replace=False)
+  def action_value(self, obs):
+    logits, value = self.predict_on_batch(obs)
+    action = self.dist.predict_on_batch(logits)
+    return np.squeeze(action, axis=-1), np.squeeze(value, axis=-1)
 
-        from_states = self.from_state_memory[batch_indices]
-        to_states = self.to_state_memory[batch_indices]
-        actions = self.action_memory[batch_indices]
-        rewards = self.reward_memory[batch_indices]
-        terminals = self.terminal_state_memory[batch_indices]
 
-        return from_states, to_states, actions, rewards, terminals
+class CarAgent:
+  def __init__(self, model, lr=7e-3, gamma=0.99, value_c=0.5, entropy_c=1e-4):
+    self.gamma = gamma
+    self.value_c = value_c
+    self.entropy_c = entropy_c
 
-class CarAgent():
-    def __init__(self, learning_rate, gamma, state_dim, action_dim,
-                 eps_start, eps_decrement, eps_end, memory_size,
-                 saved_dqn_file_name=None):
-        self.learning_rate = learning_rate
-        self.gamma = gamma
-        self.state_dim = state_dim
-        self.action_dim = action_dim
-        self.eps = eps_start
-        self.eps_decrement = eps_decrement
-        self.eps_end = eps_end
-        self.replay_memory = ReplayBuffer(memory_size, state_dim)
-        if saved_dqn_file_name is not None:
-            self.dqn = self.load_dqn_from_file(saved_dqn_file_name)
-        else:
-            self.dqn = build_dqn(learning_rate, state_dim, action_dim, 100, 100, 100, 100, 100)
-        self.dqn.summary()
+    self.model = model
+    self.model.compile(optimizer=keras.optimizers.RMSprop(lr=lr),
+                       loss=[self._logits_loss, self._value_loss])
+  
+  def choose_action(self, observation):
+    action, _ = self.model.action_value(observation[None, :])
+    return action
 
-    def do_action(self, observation, explore):
-        if explore and np.random.rand() < self.eps:
-            return np.random.choice(self.action_dim)
-        else:
-            q_values = self.dqn.predict(observation.reshape(1, self.state_dim))
-            return np.argmax(q_values)
+  def _returns_advantages(self, rewards, dones, values, next_value):
+    returns = np.append(np.zeros_like(rewards), next_value, axis=-1)
+    for t in reversed(range(rewards.shape[0])):
+      returns[t] = rewards[t] + self.gamma * returns[t + 1] * (1 - dones[t])
+    returns = returns[:-1]
+    advantages = returns - values
+    return returns, advantages
 
-    def store_transition(self, from_state, to_state, action, reward, done):
-        self.replay_memory.store_transition(
-                from_state, to_state, action, reward, done)
+  def _value_loss(self, returns, value):
+    return self.value_c * keras.losses.mean_squared_error(returns, value)
 
-    def learn(self, batch_size):
-        if batch_size > self.replay_memory.memory_counter:
-            return np.Inf, self.eps
-        
-        from_states, to_states, actions, rewards, terminals = \
-                self.replay_memory.get_batch(batch_size)
+  def _logits_loss(self, actions_and_advantages, logits):
+    actions, advantages = tf.split(actions_and_advantages, 2, axis=-1)
+    weighted_sparse_ce = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    actions = tf.cast(actions, tf.int32)
+    policy_loss = weighted_sparse_ce(actions, logits, sample_weight=advantages)
+    probs = tf.nn.softmax(logits)
+    entropy_loss = keras.losses.categorical_crossentropy(probs, probs)
+    return policy_loss - self.entropy_c * entropy_loss
 
-        q_this = self.dqn.predict(from_states)
-        q_next = self.dqn.predict(to_states)
 
-        q_target = np.copy(q_this)
-
-        q_target[:, actions] = rewards + \
-                np.where(terminals == False, self.gamma * np.max(q_next, axis=1), 0)
-
-        loss = self.dqn.train_on_batch(from_states, q_target)
-
-        self.eps = self.eps - self.eps_decrement \
-                if self.eps > self.eps_end else self.eps_end
-
-        return loss, self.eps
-
-    def save_dqn_to_file(self, file_name):
-        self.dqn.save(file_name)
-
-    def load_dqn_from_file(self, file_name):
-        return keras.models.load_model(file_name)

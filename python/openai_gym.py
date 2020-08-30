@@ -2,9 +2,15 @@ import numpy as np
 import gym
 from agent import CarAgent
 import tensorflow as tf
+import matplotlib.pyplot as plt
+
+def plot_scores(scores):
+    plt.scatter(np.arange(len(scores)), scores, label='Scores')
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
-    env = gym.make('LunarLander-v2')
+    env = gym.make('CartPole-v0')
     lr = 0.001
     n_games = 500
     agent = CarAgent(gamma=0.99, learning_rate=lr,
@@ -12,6 +18,9 @@ if __name__ == '__main__':
                      action_dim=env.action_space.n,
                      eps_start=1.0, eps_decrement=0.001, eps_end=0.01,
                      memory_size=1000000)
+
+    scores = []
+    eps_history = []
 
     for i in range(n_games):
         done = False
@@ -25,4 +34,10 @@ if __name__ == '__main__':
             observation = observation_
             agent.learn(64)
 
-        print(score)
+        eps_history.append(agent.eps)
+        scores.append(score)
+        avg_score = np.mean(scores[-100:])
+        print(f'Episode: {i}')
+        print(f'  Average Score: {score}')
+
+    plot_scores(scores)
