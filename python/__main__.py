@@ -14,7 +14,7 @@ def argument_parser():
     parser.add_argument('-s', '--start_index', type=int, default=0)
     parser.add_argument('-e', '--end_index', type=int, default=1)
     parser.add_argument('-b', '--batch_size', type=int, default=64)
-    parser.add_argument('-n', '--num_updates', type=int, default=250)
+    parser.add_argument('-n', '--training_rounds', type=int, default=3000)
     parser.add_argument('-lr', '--learning_rate', type=float, default=7e-3)
     parser.add_argument('-p', '--plot_results', action='store_true', default=False)
     args = parser.parse_args()
@@ -39,33 +39,6 @@ def render_cars(screen):
         car_transform = get_car_transform(rotation, [int(x) for x in size])
         screen.blit(car_transform, adjusted_position)
 
-def train(car_agent, env, batch_sz=64, updates=250):
-    actions = np.empty((batch_sz,), dtype=np.int32)
-    rewards, dones, values = np.empty((3, batch_sz))
-    observations = np.empty((batch_sz,) + (env.state_dim_size(),))
-
-    scores = [0.0]
-    next_obs, _, _ = env.reset()
-    for update in range(updates):
-        for step in range(batch_sz):
-            observations[step] = next_obs.copy()
-            actions[step], values[step] = car_agent.model.action_value(next_obs[None, :])
-            next_obs, rewards[step], dones[step] = env.step(actions[step])
-
-            scores[-1] += rewards[step]
-            if dones[step]:
-                scores.append(0.0)
-                next_obs, _, _ = env.reset()
-                print("Episode: %03d, Score: %03d" % (len(scores) - 1, scores[-2]))
-
-        _, next_value = car_agent.model.action_value(next_obs[None, :])
-        returns, advs = car_agent._returns_advantages(rewards, dones, values, next_value)
-        acts_and_advs = np.concatenate([actions[:, None], advs[:, None]], axis=-1)
-        losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
-        print("[%d/%d] Losses: %s" % (update + 1, updates, losses))
-        print(f'Car Position: {env.get_car_position()}')
-    return scores
-  
 def validation_render_episode(car_agent, background):
     print('Validation Round')
     pygame.init()
@@ -109,12 +82,14 @@ def save_scores_plot(scores):
     plt.xlabel('episode')
     plt.savefig('scores.pdf')
 
-# new main
 if __name__ == '__main__':
+    # Setup environment and agent
     args = argument_parser()
     world_id = args.world
     start_index = args.start_index
     end_index = args.end_index
+    batch_size = args.batch_size
+    training_rounds = args.training_rounds
 
     env.init(world_id, start_index, end_index)
     background = pygame.image.load(f'env_images/env_{world_id}.jpg')
@@ -122,9 +97,34 @@ if __name__ == '__main__':
     model = agent.Model(num_actions=env.action_dim_size())
     car_agent = agent.CarAgent(model, args.learning_rate)
 
-    rewards_history = train(car_agent, env, args.batch_size, args.num_updates)
-    print("Finished training. Testing...")
-    validation_render_episode(car_agent, background)
+    # Start training
+    actions = np.empty((batch_size,), dtype=np.int32)
+    rewards, dones, values = np.empty((3, batch_size))
+    observations = np.empty((batch_size,) + (env.state_dim_size(),))
+
+    scores = [0.0]
+    next_obs, _, _ = env.reset()
+    for update in range(training_rounds):
+        for step in range(batch_size):
+            observations[step] = next_obs.copy()
+            actions[step], values[step] = car_agent.model.action_value(next_obs[None, :])
+            next_obs, rewards[step], dones[step] = env.step(actions[step])
+
+            scores[-1] += rewards[step]
+            if dones[step]:
+                scores.append(0.0)
+                next_obs, _, _ = env.reset()
+                print("Episode: %03d, Score: %03d" % (len(scores) - 1, scores[-2]))
+
+        _, next_value = car_agent.model.action_value(next_obs[None, :])
+        returns, advs = car_agent._returns_advantages(rewards, dones, values, next_value)
+        acts_and_advs = np.concatenate([actions[:, None], advs[:, None]], axis=-1)
+        losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
+        print(f'Episode [{update + 1}/{training_rounds}]:')
+        print(f'Score: {scores[-1]}')
+
+        if update % 100 == 0:
+            validation_render_episode(car_agent, background)
 
     if args.plot_results:
         plt.style.use('seaborn')
