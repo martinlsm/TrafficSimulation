@@ -1,4 +1,5 @@
 #include <limits>
+#include <cstdlib>
 #include "road_system.h"
 
 namespace traffic {
@@ -20,6 +21,18 @@ bool StraightRoad::inside(Vec2d<float> pos) const {
 	pos.rotate(-road_rotation);
 	return pos.x >= 0 && pos.x <= length
 			&& pos.y >= -(width / 2) && pos.y <= width / 2;
+}
+
+Vec2d<float> StraightRoad::randomPointInside() const {
+	float r_x = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float r_y = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	Vec2d<float> rand_pos {r_x, r_y};
+	rand_pos.x *= length;
+	rand_pos.y -= 0.5f;
+	rand_pos.y *= width;
+	rand_pos.rotate(rotation);
+	rand_pos += a;
+	return rand_pos;
 }
 
 float StraightRoad::sensor_reading(Vec2d<float> sensor_origin, float angle) const {
@@ -86,6 +99,18 @@ bool FilledSquare::inside(Vec2d<float> pos) const {
 	pos.rotate(-rotation);
 	return pos.x >= -side_len / 2.0f && pos.y >= -side_len / 2.0f
 			&& pos.x <= side_len / 2.0f && pos.y <= side_len / 2.0f;
+}
+
+Vec2d<float> FilledSquare::randomPointInside() const {
+	float r_x = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float r_y = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	Vec2d<float> rand_pos {r_x, r_y};
+	rand_pos.x -= 0.5f;
+	rand_pos.y -= 0.5f;
+	rand_pos *= side_len;
+	rand_pos.rotate(rotation);
+	rand_pos += location;
+	return rand_pos;
 }
 
 float FilledSquare::sensor_reading(Vec2d<float> sensor_origin, float angle) const {
@@ -156,6 +181,16 @@ bool FilledCircularPiece::inside(Vec2d<float> pos) const {
 	return pos.abs() <= radius;
 }
 
+Vec2d<float> FilledCircularPiece::randomPointInside() const {
+	float r_angle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float r_radius = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	r_angle *= 2 * M_PI;
+	r_radius *= radius;
+	float r_x = r_radius * std::cos(r_angle);
+	float r_y = r_radius * std::sin(r_angle);
+	return Vec2d<float> {r_x, r_y};
+}
+
 float FilledCircularPiece::sensor_reading(Vec2d<float> pos, float angle) const {
 	throw "TODO: Function not implemented";
 }
@@ -185,6 +220,12 @@ bool RoadSystem::inside(const CarMechanics &car) const {
 		}
 	}
 	return false;
+}
+
+Vec2d<float> RoadSystem::randomPointOnRoad() {
+	int i = std::rand() % road_pieces.size();		
+	Vec2d<float> random_point = road_pieces[i]->randomPointInside();
+	return random_point;
 }
 
 vector<float> RoadSystem::sensor_readings(

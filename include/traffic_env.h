@@ -59,6 +59,7 @@ public:
 
 	// Spawns a car and returns its assigned id
 	unsigned long spawnCar(size_t start_idx, size_t goal_idx);
+	unsigned long spawnCarAtRandomPos(size_t goal_idx);
 	void doAction(unsigned long car_id, car_action action);
 	void update(const float dt);
 	void clearFinishedCars();

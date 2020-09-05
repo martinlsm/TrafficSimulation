@@ -12,6 +12,7 @@ PYBIND11_MODULE(env_api, m) {
 	// m.def("state_dim_size", &env_api::state_dim_size);
 	m.def("action_dim_size", &env_api::action_dim_size);
 	m.def("spawn_car", &env_api::spawn_car);
+	m.def("spawn_car_at_random_pos", &env_api::spawn_car_at_random_pos);
 	m.def("remove_car", &env_api::remove_car);
 	m.def("index_to_action", &env_api::index_to_action);
 	m.def("do_action", &env_api::do_action);

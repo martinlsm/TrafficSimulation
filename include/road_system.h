@@ -14,6 +14,7 @@ class RoadPiece {
 public:
 	virtual ~RoadPiece() {};
 	virtual bool inside(Vec2d<float> pos) const = 0;
+	virtual Vec2d<float> randomPointInside() const = 0;
 
 	/* If the sensor is placed within the road piece, this function returns the
 	 * distance between the sensor's placement and sensor's ray cross the
@@ -44,6 +45,7 @@ public:
 	StraightRoad(const Vec2d<float> a, const Vec2d<float> b, float width);
 	~StraightRoad() override;
 	bool inside(Vec2d<float> pos) const override;
+	Vec2d<float> randomPointInside() const override;
 	float sensor_reading(Vec2d<float> sensor_origin, float angle) const override;
 	float getWidth() const;
 	Vec2d<float> getEndpointA() const;
@@ -61,6 +63,7 @@ public:
 	FilledSquare(Vec2d<float> location, float side_len, float rotation);
 	~FilledSquare() override;
 	bool inside(Vec2d<float> pos) const override;
+	Vec2d<float> randomPointInside() const override;
 	float sensor_reading(Vec2d<float> sensor_origin, float angle) const override;
 	Vec2d<float> getLocation() const;
 	float getSideLen() const;
@@ -75,6 +78,7 @@ public:
 	FilledCircularPiece(Vec2d<float> position, float radius);
 	~FilledCircularPiece() override;
 	bool inside(Vec2d<float> pos) const override;
+	Vec2d<float> randomPointInside() const override;
 	float sensor_reading(Vec2d<float> sensor_origin, float angle) const override;
 	float getRadius() const;
 	Vec2d<float> getPos() const;
@@ -89,6 +93,8 @@ public:
 
 	/* Returns true if the entire car is on the road, otherwise false */
 	bool inside(const CarMechanics &car) const;
+
+	Vec2d<float> randomPointOnRoad();
 
 	vector<float> sensor_readings(
 			const CarMechanics &car, const vector<float>& sensor_angles) const;

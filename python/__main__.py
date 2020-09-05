@@ -49,7 +49,7 @@ def validation_render_episode(car_agent, background):
 
     state_counter = 0
     score = 0
-    observation, reward, done = env.reset()
+    observation, reward, done = env.reset(False)
     while not done:
         action = car_agent.choose_action(observation)
         next_observation, reward, done = env.step(action)
@@ -74,6 +74,8 @@ def validation_render_episode(car_agent, background):
     print(f'  States: {state_counter}')
 
     pygame.quit()
+
+    return score
 
 def save_scores_plot(scores):
     plt.scatter(np.arange(len(scores)), scores)
@@ -102,33 +104,29 @@ if __name__ == '__main__':
     rewards, dones, values = np.empty((3, batch_size))
     observations = np.empty((batch_size,) + (env.state_dim_size(),))
 
-    scores = [0.0]
-    next_obs, _, _ = env.reset()
+    validation_scores = []
+    next_obs, _, _ = env.reset(True)
     for update in range(training_rounds):
         for step in range(batch_size):
             observations[step] = next_obs.copy()
             actions[step], values[step] = car_agent.model.action_value(next_obs[None, :])
             next_obs, rewards[step], dones[step] = env.step(actions[step])
 
-            scores[-1] += rewards[step]
             if dones[step]:
-                scores.append(0.0)
-                next_obs, _, _ = env.reset()
-                print("Episode: %03d, Score: %03d" % (len(scores) - 1, scores[-2]))
+                next_obs, _, _ = env.reset(True)
 
         _, next_value = car_agent.model.action_value(next_obs[None, :])
         returns, advs = car_agent._returns_advantages(rewards, dones, values, next_value)
         acts_and_advs = np.concatenate([actions[:, None], advs[:, None]], axis=-1)
         losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
-        print(f'Episode [{update + 1}/{training_rounds}]:')
-        print(f'Score: {scores[-1]}')
 
         if update % 100 == 0:
-            validation_render_episode(car_agent, background)
+            val_score = validation_render_episode(car_agent, background)
+            validation_scores.append(val_score)
 
-    if args.plot_results:
-        plt.style.use('seaborn')
-        plt.plot(np.arange(0, len(rewards_history), 10), rewards_history[::10])
-        plt.xlabel('Episode')
-        plt.ylabel('Total Reward')
-        plt.show()
+            plt.figure()
+            plt.style.use('seaborn')
+            plt.plot(validation_scores)
+            plt.xlabel('Episode')
+            plt.ylabel('Total Reward')
+            plt.savefig('scores.pdf')

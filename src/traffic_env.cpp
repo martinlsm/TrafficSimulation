@@ -81,6 +81,17 @@ unsigned long TrafficEnvironment::spawnCar(size_t start_idx, size_t goal_idx) {
 	return car_counter;
 }
 
+unsigned long TrafficEnvironment::spawnCarAtRandomPos(size_t goal_idx) {
+	car_counter++;
+	Destination* goal = &destinations[goal_idx];
+	Vec2d<float> r_pos = road_system->randomPointOnRoad();
+	float r_angle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	r_angle *= 2 * M_PI;
+	CarMechanics car {r_pos.x, r_pos.y, r_angle};
+	active_cars.insert(std::pair<unsigned int, Car>(car_counter, Car{car, goal}));
+	return car_counter;
+}
+
 void TrafficEnvironment::doAction(unsigned long car_id, car_action action) {
 	auto it = active_cars.find(car_id);
 	CarMechanics* car = &it->second.body;

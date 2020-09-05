@@ -6,6 +6,20 @@ using geometry::Vec2d;
 using traffic::StraightRoad;
 using traffic::CarMechanics;
 
+static Vec2d<float> random_point() {
+	float r_x = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	float r_y = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	r_x = (r_x - 0.5f) * 200.0f;
+	r_y = (r_y - 0.5f) * 200.0f;
+	return Vec2d<float> {r_x, r_y};
+}
+
+static float random_width() {
+	float r_f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+	r_f *= 20.0f;
+	return r_f;
+}
+
 TEST(TestStraightRoad, inside_1) {
 	Vec2d<float> pos {200, 200};
 	Vec2d<float> a {100, 100};
@@ -183,4 +197,18 @@ TEST(TestStraightRoad, sensor_reading_11) {
 	Vec2d<float> b {200, 0};
 	StraightRoad road {a, b, 50};
 	ASSERT_NEAR(road.sensor_reading(pos, sensor_angle), 25.0f, 1e-5);
+}
+
+TEST(TestStraightRoad, random_points) {
+	for (int i = 0; i < 100; i++) {
+		Vec2d<float> a = random_point();
+		Vec2d<float> b = random_point();
+		float w = random_width();
+		StraightRoad road {a, b, w};
+		for (int j = 0; j < 1000; j++) {
+			Vec2d<float> r_p = road.randomPointInside();
+			bool inside = road.inside(r_p);
+			ASSERT_TRUE(inside);
+		}
+	}
 }

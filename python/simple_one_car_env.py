@@ -28,7 +28,7 @@ def init(traffic_env_id, car_start, car_end):
     end_index = car_end
     env_api.load_traffic_environment(traffic_env_id)
 
-def reset():
+def reset(random_car_start_pos):
     global car_id
 
     try:
@@ -36,7 +36,10 @@ def reset():
     except NameError:
         pass
 
-    car_id = env_api.spawn_car(start_index, end_index)
+    if random_car_start_pos:
+        car_id = env_api.spawn_car_at_random_pos(end_index)
+    else:
+        car_id = env_api.spawn_car(start_index, end_index)
     observation = env_api.read_state_sensors(car_id)
     reward = env_api.get_reward_advanced(car_id)
     done = env_api.in_terminal_state(car_id)

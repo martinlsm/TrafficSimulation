@@ -37,6 +37,11 @@ unsigned long spawn_car(size_t start, size_t goal) {
 	return car_id;
 }
 
+unsigned long spawn_car_at_random_pos(size_t goal) {
+	unsigned long car_id = environment->spawnCarAtRandomPos(goal);
+	return car_id;
+}
+
 void remove_car(unsigned long car_id) {
 	environment->removeCar(car_id);
 }

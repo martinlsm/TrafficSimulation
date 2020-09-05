@@ -19,3 +19,4 @@ endmacro()
 
 package_add_test(test1 vec2d_test.cpp)
 package_add_test(test2 straight_road_test.cpp)
+package_add_test(test3 filled_square_piece_test.cpp)

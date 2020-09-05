@@ -17,6 +17,7 @@ struct Vec2d {
 	void operator+=(const Vec2d<T> &rhs);
 	void operator+=(const PolarVec2d<T> &rhs);
 	void operator-=(const Vec2d<T> &rhs);
+	void operator*=(const T t);
 
 	template<class U>
 	friend Vec2d<U> operator+(const Vec2d<U> &v1, const Vec2d<U> &v2);
@@ -80,6 +81,12 @@ template <class T>
 void Vec2d<T>::operator-=(const Vec2d<T> &rhs) {
 	x -= rhs.x;
 	y -= rhs.y;
+}
+
+template <class T>
+void Vec2d<T>::operator*=(const T t) {
+	x *= t;
+	y *= t;
 }
 
 template <class T>

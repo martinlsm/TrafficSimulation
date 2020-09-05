@@ -15,6 +15,7 @@ size_t car_count();
 // size_t state_dim_size();
 size_t action_dim_size();
 unsigned long spawn_car(size_t start, size_t goal);
+unsigned long spawn_car_at_random_pos(size_t goal);
 void remove_car(unsigned long car_id);
 traffic::car_action index_to_action(size_t idx);
 void update();
