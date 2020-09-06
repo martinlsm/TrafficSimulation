@@ -16,7 +16,6 @@ def argument_parser():
     parser.add_argument('-b', '--batch_size', type=int, default=64)
     parser.add_argument('-n', '--training_rounds', type=int, default=3000)
     parser.add_argument('-lr', '--learning_rate', type=float, default=7e-3)
-    parser.add_argument('-p', '--plot_results', action='store_true', default=False)
     args = parser.parse_args()
     return args
 
