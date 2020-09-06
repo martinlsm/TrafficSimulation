@@ -3,9 +3,8 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import pygame
-import env_api
 import agent
-import simple_one_car_env as env
+from simple_one_car_env import AgentEnvironment
 
 def argument_parser():
     parser = argparse.ArgumentParser()
@@ -26,19 +25,20 @@ def get_car_transform(rotation, size):
     car_transformed = pygame.transform.rotate(car_transformed, 270 - rotation)
     return car_transformed
 
-def render_cars(screen):
-    car_ids = env_api.get_car_ids()
+def render_cars(env, screen):
+    # FIXME: env.env is not good naming...
+    car_ids = env.env.get_car_ids()
     for car_id in car_ids:
-        position = env_api.get_car_position(car_id)
-        rotation = env_api.get_car_rotation_degrees(car_id)
-        size = env_api.get_car_size(car_id)
+        position = env.env.get_car_position(car_id)
+        rotation = env.env.get_car_rotation_degrees(car_id)
+        size = env.env.get_car_size(car_id)
         
         adjusted_position = (round(position[0] - size[0] / 2),
                              round(position[1] - size[1] / 2))
         car_transform = get_car_transform(rotation, [int(x) for x in size])
         screen.blit(car_transform, adjusted_position)
 
-def validation_render_episode(car_agent, background):
+def validation_render_episode(env, car_agent, background):
     print('Validation Round')
     pygame.init()
     clock = pygame.time.Clock()
@@ -64,8 +64,8 @@ def validation_render_episode(car_agent, background):
                 done = True
         dt = clock.tick(30)
         screen.blit(background, (0, 0))
-        pygame.draw.circle(screen, (255, 255, 255, 64), env.get_car_destination(), env_api.get_goal_margin())
-        render_cars(screen)
+        pygame.draw.circle(screen, (255, 255, 255, 64), env.get_car_destination(), env.env.get_goal_margin())
+        render_cars(env, screen)
         pygame.display.update()
 
     print(f'  Car position: {env.get_car_position()}')
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     batch_size = args.batch_size
     training_rounds = args.training_rounds
 
-    env.init(world_id, start_index, end_index)
+    env = AgentEnvironment(world_id, start_index, end_index)
     background = pygame.image.load(f'env_images/env_{world_id}.jpg')
 
     model = agent.Model(num_actions=env.action_dim_size())
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
 
         if update % 100 == 0:
-            val_score = validation_render_episode(car_agent, background)
+            val_score = validation_render_episode(env, car_agent, background)
             validation_scores.append(val_score)
 
             plt.figure()

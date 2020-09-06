@@ -2,62 +2,58 @@ import env_api
 import numpy as np
 import random
 
-def state_dim_size():
-    return 16
+class AgentEnvironment:
+    def __init__(self, traffic_env_id, car_start, car_end):
+        self.env = env_api.Environment(traffic_env_id)
+        self.start_index = car_start
+        self.end_index = car_end
+        self.car_id = -1    # no car is active yet
 
-def action_dim_size():
-    return 5
+    def state_dim_size(self):
+        return 16
 
-# this environment reduces the amount of possible actions to 5
-def __translate_action(action):
-    if action == 0:
-        return env_api.car_action_do_nothing
-    elif action == 1:
-        return env_api.car_action_gas_medium
-    elif action == 2:
-        return env_api.car_action_brake_medium
-    elif action == 3:
-        return env_api.car_action_turn_left_hard
-    elif action == 4:
-        return env_api.car_action_turn_right_hard
+    def action_dim_size(self):
+        return 5
 
-def init(traffic_env_id, car_start, car_end):
-    global start_index, end_index
+    # this environment reduces the amount of possible actions to 5
+    def __translate_action(self, action):
+        if action == 0:
+            return env_api.car_action_do_nothing
+        elif action == 1:
+            return env_api.car_action_gas_medium
+        elif action == 2:
+            return env_api.car_action_brake_medium
+        elif action == 3:
+            return env_api.car_action_turn_left_hard
+        elif action == 4:
+            return env_api.car_action_turn_right_hard
 
-    start_index = car_start
-    end_index = car_end
-    env_api.load_traffic_environment(traffic_env_id)
+    def reset(self, place_car_randomly):
+        if self.car_id != -1:
+            self.env.remove_car(self.car_id)
 
-def reset(random_car_start_pos):
-    global car_id
+        if place_car_randomly:
+            self.car_id = self.env.spawn_car_at_random_pos(self.end_index)
+        else:
+            self.car_id = self.env.spawn_car(self.start_index, self.end_index)
+        observation = self.env.read_state_sensors(self.car_id)
+        reward = self.env.get_reward_advanced(self.car_id)
+        done = self.env.in_terminal_state(self.car_id)
+        return observation, reward, done
 
-    try:
-        env_api.remove_car(car_id)
-    except NameError:
-        pass
+    def step(self, action):
+        action = self.__translate_action(action)
+        self.env.do_action(self.car_id, action)
+        self.env.update()
 
-    if random_car_start_pos:
-        car_id = env_api.spawn_car_at_random_pos(end_index)
-    else:
-        car_id = env_api.spawn_car(start_index, end_index)
-    observation = env_api.read_state_sensors(car_id)
-    reward = env_api.get_reward_advanced(car_id)
-    done = env_api.in_terminal_state(car_id)
-    return observation, reward, done
+        observation = self.env.read_state_sensors(self.car_id)
+        reward = self.env.get_reward_advanced(self.car_id)
+        done = self.env.in_terminal_state(self.car_id)
 
-def step(action):
-    action = __translate_action(action)
-    env_api.do_action(car_id, action)
-    env_api.update()
+        return observation, reward, done
 
-    observation = env_api.read_state_sensors(car_id)
-    reward = env_api.get_reward_advanced(car_id)
-    done = env_api.in_terminal_state(car_id)
+    def get_car_position(self):
+        return self.env.get_car_position(self.car_id)
 
-    return observation, reward, done
-
-def get_car_position():
-    return env_api.get_car_position(car_id)
-
-def get_car_destination():
-    return env_api.get_car_destination(car_id)
+    def get_car_destination(self):
+        return self.env.get_car_destination(self.car_id)

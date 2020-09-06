@@ -5,29 +5,40 @@
 
 namespace py = pybind11;
 
+struct Pet {
+    Pet(const std::string &name) : name(name) { }
+    void setName(const std::string &name_) { name = name_; }
+    const std::string &getName() const { return name; }
+
+    std::string name;
+};
+
 PYBIND11_MODULE(env_api, m) {
-    m.def("load_traffic_environment", &env_api::load_traffic_environment);
-    m.def("destination_count", &env_api::destination_count);
-    m.def("car_count", &env_api::car_count);
-	// m.def("state_dim_size", &env_api::state_dim_size);
-	m.def("action_dim_size", &env_api::action_dim_size);
-	m.def("spawn_car", &env_api::spawn_car);
-	m.def("spawn_car_at_random_pos", &env_api::spawn_car_at_random_pos);
-	m.def("remove_car", &env_api::remove_car);
-	m.def("index_to_action", &env_api::index_to_action);
-	m.def("do_action", &env_api::do_action);
-	m.def("update", &env_api::update);
-    m.def("read_state_simple", &env_api::read_state_simple);
-    m.def("read_state_sensors", &env_api::read_state_sensors);
-	m.def("get_reward_simple", &env_api::get_reward_simple);
-	m.def("get_reward_advanced", &env_api::get_reward_advanced);
-	m.def("in_terminal_state", &env_api::in_terminal_state);
-	m.def("get_car_position", &env_api::get_car_position);
-	m.def("get_car_destination", &env_api::get_car_destination);
-	m.def("get_car_size", &env_api::get_car_size);
-	m.def("get_car_rotation_degrees", &env_api::get_car_rotation_degrees);
-	m.def("get_car_ids", &env_api::get_car_ids);
-	m.def("get_goal_margin", &env_api::get_goal_margin);
+	py::class_<Pet>(m, "Pet").def(py::init<const std::string &>()).def("setName", &Pet::setName).def("getName", &Pet::getName);
+
+	py::class_<env_api::Environment>(m, "Environment")
+		.def(py::init<unsigned int>())
+    	.def("destination_count", &env_api::Environment::destination_count)
+    	.def("car_count", &env_api::Environment::car_count)
+		// .def("state_dim_size", &env_api::state_dim_size)
+		.def("action_dim_size", &env_api::Environment::action_dim_size)
+		.def("spawn_car", &env_api::Environment::spawn_car)
+		.def("spawn_car_at_random_pos", &env_api::Environment::spawn_car_at_random_pos)
+		.def("remove_car", &env_api::Environment::remove_car)
+		.def("index_to_action", &env_api::Environment::index_to_action)
+		.def("do_action", &env_api::Environment::do_action)
+		.def("update", &env_api::Environment::update)
+    	.def("read_state_simple", &env_api::Environment::read_state_simple)
+    	.def("read_state_sensors", &env_api::Environment::read_state_sensors)
+		.def("get_reward_simple", &env_api::Environment::get_reward_simple)
+		.def("get_reward_advanced", &env_api::Environment::get_reward_advanced)
+		.def("in_terminal_state", &env_api::Environment::in_terminal_state)
+		.def("get_car_position", &env_api::Environment::get_car_position)
+		.def("get_car_destination", &env_api::Environment::get_car_destination)
+		.def("get_car_size", &env_api::Environment::get_car_size)
+		.def("get_car_rotation_degrees", &env_api::Environment::get_car_rotation_degrees)
+		.def("get_car_ids", &env_api::Environment::get_car_ids)
+		.def("get_goal_margin", &env_api::Environment::get_goal_margin);
 
 	m.attr("car_action_do_nothing")        = traffic::DO_NOTHING;
 	m.attr("car_action_brake_light")       = traffic::BRAKE_LIGHT;
