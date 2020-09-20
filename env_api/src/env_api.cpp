@@ -84,7 +84,7 @@ py::array_t<float> Environment::read_state_simple(size_t car_id) {
 	res_data[5] = steering_angle;
 	res_data[6] = vec_to_dest.x;
 	res_data[7] = vec_to_dest.y;
-	
+
 	return result;
 }
 
@@ -102,22 +102,21 @@ py::array_t<float> Environment::read_state_sensors(unsigned long car_id) {
 	Vec2d<float> destination_pos = traffic_env->getCarDestination(car_id);
 	Vec2d<float> vec_to_dest = destination_pos - car_pos;
 
-	vector<float> sensors = traffic_env->getCarSensorReadings(car_id);	
+	vector<float> sensors = traffic_env->getCarSensorReadings(car_id);
 
-	auto result = py::array_t<float>(16);
+	// FIXME: Remove hard coded number.
+	auto result = py::array_t<float>(15);
 	py::buffer_info res_buf = result.request();
 	float* res_data = (float*)res_buf.ptr;
 
 	// output normalized vector
-	res_data[0] = car_pos.x / MAX_DIST;
-	res_data[1] = car_pos.y / MAX_DIST;
-	res_data[2] = speed_x / MAX_DIST;
-	res_data[3] = speed_y / MAX_DIST;
-	res_data[4] = steering_angle;
-	res_data[5] = vec_to_dest.x / MAX_DIST;
-	res_data[6] = vec_to_dest.y / MAX_DIST;
+	res_data[0] = speed_x / MAX_DIST;
+	res_data[1] = speed_y / MAX_DIST;
+	res_data[2] = steering_angle;
+	res_data[3] = vec_to_dest.x / MAX_DIST;
+	res_data[4] = vec_to_dest.y / MAX_DIST;
 	for (size_t i = 0; i < sensors.size(); i++) {
-		res_data[i + 7] = sensors[i] / MAX_DIST;
+		res_data[i + 5] = sensors[i] / MAX_DIST;
 	}
 
 	return result;
@@ -164,7 +163,8 @@ std::tuple<float, float> Environment::get_car_position(unsigned long car_id) {
 	return std::make_tuple(pos.x, pos.y);
 }
 
-std::tuple<float, float> Environment::get_car_destination(unsigned long car_id) {
+std::tuple<float, float>
+Environment::get_car_destination(unsigned long car_id) {
 	Vec2d<float> dest = traffic_env->getCarDestination(car_id);
 	return std::make_tuple(dest.x, dest.y);
 }
