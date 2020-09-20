@@ -9,7 +9,7 @@
 
 namespace traffic {
 
-/*
+/**
  * Cars spawn and end on Destinations
  */
 struct Destination {

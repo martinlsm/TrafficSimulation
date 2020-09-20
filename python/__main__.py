@@ -32,7 +32,7 @@ def render_cars(env, screen):
         position = env.env.get_car_position(car_id)
         rotation = env.env.get_car_rotation_degrees(car_id)
         size = env.env.get_car_size(car_id)
-        
+
         adjusted_position = (round(position[0] - size[0] / 2),
                              round(position[1] - size[1] / 2))
         car_transform = get_car_transform(rotation, [int(x) for x in size])
@@ -64,7 +64,8 @@ def validation_render_episode(env, car_agent, background):
                 done = True
         dt = clock.tick(30)
         screen.blit(background, (0, 0))
-        pygame.draw.circle(screen, (255, 255, 255, 64), env.get_car_destination(), env.env.get_goal_margin())
+        pygame.draw.circle(screen, (255, 255, 255, 64),
+                           env.get_car_destination(), env.env.get_goal_margin())
         render_cars(env, screen)
         pygame.display.update()
 
