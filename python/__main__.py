@@ -64,8 +64,9 @@ def validation_render_episode(env, car_agent, background):
                 done = True
         dt = clock.tick(30)
         screen.blit(background, (0, 0))
-        pygame.draw.circle(screen, (255, 255, 255, 64),
-                           env.get_car_destination(), env.env.get_goal_margin())
+        car_dest = tuple(int(x) for x in env.get_car_destination())
+        pygame.draw.circle(screen, (255, 255, 255, 64), car_dest,
+                env.env.get_goal_margin())
         render_cars(env, screen)
         pygame.display.update()
 
