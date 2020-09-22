@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import pygame
-import agent
+import double_dqn
 from simple_one_car_env import AgentEnvironment
 
 def argument_parser():
@@ -38,45 +38,45 @@ def render_cars(env, screen):
         car_transform = get_car_transform(rotation, [int(x) for x in size])
         screen.blit(car_transform, adjusted_position)
 
-def validation_render_episode(env, car_agent, background):
-    print('Validation Round')
-    pygame.init()
-    clock = pygame.time.Clock()
-    pygame.display.set_caption('Agent Training Episode')
-
-    screen = pygame.display.set_mode((1000,800))
-
-    state_counter = 0
-    score = 0
-    observation, reward, done = env.reset(False)
-    while not done:
-        action = car_agent.choose_action(observation)
-        next_observation, reward, done = env.step(action)
-        if np.all(observation == next_observation):
-            done = True
-
-        observation = next_observation
-        state_counter += 1
-        score += reward
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-        dt = clock.tick(30)
-        screen.blit(background, (0, 0))
-        car_dest = tuple(int(x) for x in env.get_car_destination())
-        pygame.draw.circle(screen, (255, 255, 255, 64), car_dest,
-                env.env.get_goal_margin())
-        render_cars(env, screen)
-        pygame.display.update()
-
-    print(f'  Car position: {env.get_car_position()}')
-    print(f'  Reward: {score}')
-    print(f'  States: {state_counter}')
-
-    pygame.quit()
-
-    return score
+# def validation_render_episode(env, car_agent, background):
+#     print('Validation Round')
+#     pygame.init()
+#     clock = pygame.time.Clock()
+#     pygame.display.set_caption('Agent Training Episode')
+# 
+#     screen = pygame.display.set_mode((1000,800))
+# 
+#     state_counter = 0
+#     score = 0
+#     observation, reward, done = env.reset(False)
+#     while not done:
+#         action = car_agent.choose_action(observation)
+#         next_observation, reward, done = env.step(action)
+#         if np.all(observation == next_observation):
+#             done = True
+# 
+#         observation = next_observation
+#         state_counter += 1
+#         score += reward
+# 
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 done = True
+#         dt = clock.tick(30)
+#         screen.blit(background, (0, 0))
+#         car_dest = tuple(int(x) for x in env.get_car_destination())
+#         pygame.draw.circle(screen, (255, 255, 255, 64), car_dest,
+#                 env.env.get_goal_margin())
+#         render_cars(env, screen)
+#         pygame.display.update()
+# 
+#     print(f'  Car position: {env.get_car_position()}')
+#     print(f'  Reward: {score}')
+#     print(f'  States: {state_counter}')
+# 
+#     pygame.quit()
+# 
+#     return score
 
 def save_scores_plot(scores):
     plt.scatter(np.arange(len(scores)), scores)
@@ -97,37 +97,50 @@ if __name__ == '__main__':
     env = AgentEnvironment(world_id, start_index, end_index)
     background = pygame.image.load(f'env_images/env_{world_id}.jpg')
 
-    model = agent.Model(num_actions=env.action_dim_size())
-    car_agent = agent.CarAgent(model, args.learning_rate)
+    car_agent = double_dqn.Agent(learning_rate=0.0005, gamma=0.99,
+                                 num_actions=4, eps=1.0, batch_size=64,
+                                 input_shape=[env.state_dim_size()])
+    scores = []
+    eps_history = []
 
-    # Start training
-    actions = np.empty((batch_size,), dtype=np.int32)
-    rewards, dones, values = np.empty((3, batch_size))
-    observations = np.empty((batch_size,) + (env.state_dim_size(),))
+    for i in range(training_rounds):
+        observation, score, done = env.reset(False)
+        while not done:
+            action = car_agent.choose_action(observation)
+            next_observation, reward, done = env.step(action)
+            score += reward
+            car_agent.store_transition(observation, next_observation, action,
+                                       reward, done)
+            observation = next_observation
+            car_agent.learn()
+        eps_history.append(car_agent.epsilon)
+        scores.append(score)
 
-    validation_scores = []
-    next_obs, _, _ = env.reset(True)
-    for update in range(training_rounds):
-        for step in range(batch_size):
-            observations[step] = next_obs.copy()
-            actions[step], values[step] = car_agent.model.action_value(next_obs[None, :])
-            next_obs, rewards[step], dones[step] = env.step(actions[step])
+        avg_score = np.mean(scores[-100:])
+        print(f'Episode {i} average score: {avg_score}')
 
-            if dones[step]:
-                next_obs, _, _ = env.reset(True)
+    # next_obs, _, _ = env.reset(True)
+    # for update in range(training_rounds):
+    #     for step in range(batch_size):
+    #         observations[step] = next_obs.copy()
+    #         actions[step], values[step] = car_agent.model.action_value(next_obs[None, :])
+    #         next_obs, rewards[step], dones[step] = env.step(actions[step])
 
-        _, next_value = car_agent.model.action_value(next_obs[None, :])
-        returns, advs = car_agent._returns_advantages(rewards, dones, values, next_value)
-        acts_and_advs = np.concatenate([actions[:, None], advs[:, None]], axis=-1)
-        losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
+    #         if dones[step]:
+    #             next_obs, _, _ = env.reset(True)
 
-        if update % 100 == 0:
-            val_score = validation_render_episode(env, car_agent, background)
-            validation_scores.append(val_score)
+    #     _, next_value = car_agent.model.action_value(next_obs[None, :])
+    #     returns, advs = car_agent._returns_advantages(rewards, dones, values, next_value)
+    #     acts_and_advs = np.concatenate([actions[:, None], advs[:, None]], axis=-1)
+    #     losses = car_agent.model.train_on_batch(observations, [acts_and_advs, returns])
 
-            plt.figure()
-            plt.style.use('seaborn')
-            plt.plot(validation_scores)
-            plt.xlabel('Episode')
-            plt.ylabel('Total Reward')
-            plt.savefig('scores.pdf')
+    #     if update % 100 == 0:
+    #         val_score = validation_render_episode(env, car_agent, background)
+    #         validation_scores.append(val_score)
+
+    #         plt.figure()
+    #         plt.style.use('seaborn')
+    #         plt.plot(validation_scores)
+    #         plt.xlabel('Episode')
+    #         plt.ylabel('Total Reward')
+    #         plt.savefig('scores.pdf')
