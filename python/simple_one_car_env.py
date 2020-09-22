@@ -10,7 +10,7 @@ class AgentEnvironment:
         self.car_id = -1    # no car is active yet
 
     def state_dim_size(self):
-        return 16
+        return 15
 
     def action_dim_size(self):
         return 5

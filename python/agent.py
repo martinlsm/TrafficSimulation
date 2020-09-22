@@ -39,7 +39,7 @@ class CarAgent:
     self.model = model
     self.model.compile(optimizer=keras.optimizers.RMSprop(lr=lr),
                        loss=[self._logits_loss, self._value_loss])
-  
+
   def choose_action(self, observation):
     action, _ = self.model.action_value(observation[None, :])
     return action
@@ -57,9 +57,11 @@ class CarAgent:
 
   def _logits_loss(self, actions_and_advantages, logits):
     actions, advantages = tf.split(actions_and_advantages, 2, axis=-1)
-    weighted_sparse_ce = keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    weighted_sparse_ce = \
+            keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     actions = tf.cast(actions, tf.int32)
-    policy_loss = weighted_sparse_ce(actions, logits, sample_weight=advantages)
+    policy_loss = \
+            weighted_sparse_ce(actions, logits, sample_weight=advantages)
     probs = tf.nn.softmax(logits)
     entropy_loss = keras.losses.categorical_crossentropy(probs, probs)
     return policy_loss - self.entropy_c * entropy_loss
